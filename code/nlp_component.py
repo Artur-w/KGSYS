@@ -1,5 +1,5 @@
 import spacy
-from sentences import text
+from data import text
 
 # from spacy import displacy
 nlp = spacy.load('en_core_web_sm')
