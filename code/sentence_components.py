@@ -1,6 +1,3 @@
-# import spacy
-# from sentences import text
-# nlp = spacy.load('en_core_web_sm')
 from spacy import displacy
 from nlp_component import nlp, text
 
@@ -45,7 +42,7 @@ def n_chunk(sent):
     roots = ''
     doc = nlp(sent)
     for chunk in doc.noun_chunks:
-        print(f"n_chunk\nText: {chunk.text}\n-> Root: {chunk.root.text}\n-> Arc label:{chunk.root.dep_}\n-> Root head: {chunk.root.head.text}\n")
+        print(f"\nChunk Text: {chunk.text}\n-> Root: {chunk.root.text}\n-> Arc label:{chunk.root.dep_}\n-> Root head: {chunk.root.head.text}\n")
         roots += chunk.root.text+ ' ' +chunk.root.head.text+' '
 
     return roots
