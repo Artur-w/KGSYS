@@ -6,6 +6,7 @@ import pandas as pd
 # import requests
 import spacy
 from spacy import displacy
+# TODO: use scispacy model.
 nlp = spacy.load('en_core_web_sm')
 
 from spacy.matcher import Matcher
@@ -44,10 +45,62 @@ def get_relation(sent):
 
     return(span.text)
 
+def get_entities(sent):
+  ## chunk 1
+  ent1 = ""
+  ent2 = ""
+
+  prv_tok_dep = ""    # dependency tag of previous token in the sentence
+  prv_tok_text = ""   # previous token in the sentence
+
+  prefix = ""
+  modifier = ""
+
+  #############################################################
+
+  for tok in nlp(sent):
+    ## chunk 2
+    # if token is a punctuation mark then move on to the next token
+    if tok.dep_ != "punct":
+      # check: token is a compound word or not
+      if tok.dep_ == "compound":
+        prefix = tok.text
+        # if the previous word was also a 'compound' then add the current word to it
+        if prv_tok_dep == "compound":
+          prefix = prv_tok_text + " "+ tok.text
+
+      # check: token is a modifier or not
+      if tok.dep_.endswith("mod") == True:
+        modifier = tok.text
+        # if the previous word was also a 'compound' then add the current word to it
+        if prv_tok_dep == "compound":
+          modifier = prv_tok_text + " "+ tok.text
+
+      ## chunk 3
+      if tok.dep_.find("subj") == True:
+        ent1 = modifier +" "+ prefix + " "+ tok.text
+        prefix = ""
+        modifier = ""
+        prv_tok_dep = ""
+        prv_tok_text = ""
+
+      ## chunk 4
+      if tok.dep_.find("obj") == True:
+        ent2 = modifier +" "+ prefix +" "+ tok.text
+
+      ## chunk 5
+      # update variables
+      prv_tok_dep = tok.dep_
+      prv_tok_text = tok.text
+  #############################################################
+
+  return [ent1.strip(), ent2.strip()]
+
 def print_sentence(text=text):
     for sentence in get_sent(text):
         print("Sentence", sentence)
         sent_(sentence)
+
 def sent_(sent, dep=False):
     """
     Analyse sentence, breaks sentence into: text, pos, dep
@@ -70,7 +123,7 @@ def sent_(sent, dep=False):
 
 
 # TODO: chenge name to get_sents if giving back list
-def get_sent(text):
+def get_sents(text):
     """
     return:     list of sentences for given text,
                 you can extract single sentence using
@@ -80,7 +133,7 @@ def get_sent(text):
     sents = []
     for sent in tokens.sents:
         sents.append(sent.string.strip())
-    print(f"We got {len(sent)} sentences")
+    # print(f"We got {len(sent)} sentences")
     return sents
 
 # Get root of sentence
@@ -115,11 +168,37 @@ def noun_component_list(text):
     return chunks
 
 def main():
-    for sentence in tqdm(get_sent(text)):
+    for sentence in get_sents(text):
         print(get_relation(sentence))
-    print(candidate_sentences.shape)
-    print(candidate_sentences['sentence'].sample(5))
+    # print(candidate_sentences.shape)
+    # print(candidate_sentences['sentence'].sample(5))
+    # TODO: parameraterize
+    doc = nlp("An engineer had to plan the construction of an artificial lake to produce electric energy.")
+    for tok in doc:
+        print(tok.text, "...", tok.dep_)
+    print(get_entities("An engineer had to plan the construction of an artificial lake to produce electric energy."))
+    entity_pairs = []
+    # Entity pairs
+    for i in tqdm(candidate_sentences["sentence"]):
+        entity_pairs.append(get_entities(i))
+    print(entity_pairs[:])
+    relations = [get_relation(i) for i in tqdm(candidate_sentences['sentence'])]
+    print(pd.Series(relations).value_counts()[:])
 
+    # extract subject
+    source = [i[0] for i in entity_pairs]
+
+    # extract object
+    target = [i[1] for i in entity_pairs]
+
+    kg_df = pd.DataFrame({'source':source, 'target':target, 'edge':relations})
+    # create a directed-graph from a dataframe
+    G=nx.from_pandas_edgelist(kg_df, "source", "target", edge_attr=True, create_using=nx.MultiDiGraph())
+    plt.figure(figsize=(12,12))
+
+    pos = nx.spring_layout(G)
+    nx.draw(G, with_labels=True, node_color='skyblue', edge_cmap=plt.cm.Blues, pos = pos)
+    plt.show()
     # print(n_chunk(get_sent(text)[0]))
     # noun_chunks_sent(get_sent(text)[0])
     # noun_component(get_sent(text)[0])

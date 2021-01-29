@@ -1,4 +1,4 @@
-# REDUNDANT COMPONENT
+# TODO: REDUNDANT COMPONENT
 
 # import spacy
 # import scispacy
