@@ -1,4 +1,4 @@
-from sentence_components import *
+# from sentence_components import *
 
 import re
 import pandas as pd
