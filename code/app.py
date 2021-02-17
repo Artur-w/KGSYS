@@ -1,15 +1,17 @@
 import spacy
-import scispacy
+# import scispacy
+from spacy import displacy
 from spacy.matcher import Matcher
 from spacy.tokens import Span
 import tqdm
 import pandas as pd
 nlp = spacy.load('en_core_web_sm')
+import logging
 # nlp = spacy.load("en_core_sci_sm")
-
 # TODO: need to install large model
 # nlp = spacy.load('en_core_web_lg')
 
+# TODO: Expand cleaning function.
 def clean(text):
     # removing new line character
     text = re.sub('\n','', str(text))
@@ -21,37 +23,63 @@ def clean(text):
     text = re.sub("- ",'',str(text))
     # removing quotation marks
     text = re.sub('\"','',str(text))
+    # removing this �, guessing it was apostrophe
+    text = re.sub("�s",'',str(text))
+    # removing paragraph numbers
+    text = re.sub('[0-9]+.\t','',str(text))
+    # removing new line characters
+    text = re.sub('\n ','',str(text))
+    text = re.sub('\n',' ',str(text))
+    # removing apostrophes
+    text = re.sub("'s",'',str(text))
+    # removing hyphens
+    text = re.sub("-",' ',str(text))
+    text = re.sub("- ",'',str(text))
+    # removing quotation marks
+    text = re.sub('\"','',str(text))
+    # removing salutations
+    text = re.sub("Mr\.",'Mr',str(text))
+    text = re.sub("Mrs\.",'Mrs',str(text))
+    # removing any reference to outside text
+    text = re.sub("[\(\[].*?[\)\]]", "", str(text))
+
     return text
 
-def fileconvert():
-    """
-    Read in direcory of files, look for .txt extension, extract sentences from text, save sentences in one file,
-    """
-    from pathlib import Path
-    p = Path('/Users/awenc/NUIM/CS440/KG_NLPSystem/data/Psychology Test Materials')
-    for name in p.glob('*.txt'):
-        f = open(name, 'r')
-        line = f.read()
-        # print(line)
-        x = get_sent(line)
-        len(get_sent(line))
-        outfile = open("/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.txt",'a')
-        type(x)
-        for i in clean(x):
-            # print(type(i)) # <class 'spacy.tokens.span.Span'>
-            # print(str(i))
-            outfile.write(str(i)+"\n")
-    """
-    Wrap each line in quotes in order to make data digastable by pandas DataFrame
-    """
-    with open("/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.txt",'r') as f:
-        x= f.readlines()
-        with open('/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.csv','w') as fw:
-            fw.write("sentences"+"\n")
-            for line in x:
-                fw.write('\"'+line.strip('\n').strip('\r')+'\"\n')
 
-def foosent():
+def sent_(text, dep=False):
+    """
+    Analyse sentence, breaks sentence into: text, pos, dep
+    part of speach
+    dependency
+
+    """
+    sent = nlp(text)
+    for token in sent:
+        # Get the token text, part-of-speech tag and dependency label
+        token_text = token.text
+        token_pos = token.pos_
+        token_dep = token.dep_
+        # This is for formatting only
+        print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
+    if dep==True:
+        displacy.render(sent, style='dep')
+        # print("Displacy File:",displacy.__file__)
+
+def get_sents(text):
+    """
+    return:     list of sentences for given text,
+                you can extract single sentence using
+                indexing. It return str object.
+    """
+    tokens = nlp(text)
+    sents = []
+    for sent in tokens.sents:
+        sents.append(sent.string.strip())
+    # print(f"We got {len(sent)} sentences")
+    return sents
+
+# get sent using pandas
+def get_sent2():
     sent_vecs = {}
     docs = []
 
@@ -64,25 +92,38 @@ def foosent():
     vectors = list(sent_vecs.values())
     return [sentences, vectors]
 
-def sent_(sentence, dep=False):
-    """
-    Analyse sentence, breaks sentence into: text, pos, dep
-    part of speach
-    dependency
+# function: noun(subject), verb, noun(object)
+def get_triple(text):
 
-    """
+    doc = nlp(text)
+    sent = []
 
-    sent = nlp(sentence)
-    for token in sent:
-        # Get the token text, part-of-speech tag and dependency label
-        token_text = token.text
-        token_pos = token.pos_
-        token_dep = token.dep_
-        # This is for formatting only
-        print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
-    if dep==True:
-        displacy.render(sent, style='dep')
-        # print("Displacy File:",displacy.__file__)
+    for token in doc:
+        # if the token is a verb
+        if (token.pos_ in ['VERB','ROOT']):
+            phrase =''
+            # only extract noun or pronoun subjects
+            for sub_tok in token.lefts:
+                if (sub_tok.dep_ in ['nsubj','nsubjpass']) and (sub_tok.pos_ in ['NOUN','PROPN','PRON']):
+                    # add subject to the phrase
+                    phrase += sub_tok.text
+                    # save the root of the verb in phrase
+                    phrase += ' '+token.lemma_
+                    # check for noun or pronoun direct objects
+                    for sub_tok in token.rights:
+                        # save the object in the phrase
+                        if (sub_tok.dep_ in ['dobj']) and (sub_tok.pos_ in ['NOUN','PROPN']):
+                            phrase += ' '+sub_tok.text
+                            sent.append(phrase)
+
+    return sent
+
+
+
+# TODO: WHY IT IS NOT DISPLAYED?
+def graph(sent):
+    doc = nlp(sent)
+    displacy.render(doc, style='dep')
 
 def get_relation(sent):
     """
@@ -92,7 +133,7 @@ def get_relation(sent):
     doc = nlp(sent)
 
     # Matcher class object
-    matcher = Matcher(nlp.vocab)
+    matcher = Matcher(nlp.vocab, validate=True)
 
     #define the pattern
     # TODO: explore matcher
@@ -115,7 +156,7 @@ def get_relation(sent):
     return(span.text)
 
 
-def ent_extraction(sentence):
+def get_entities(sentence):
     # store entities in variable - object subject
     ent_1 = ''
     ent_2 = ''
@@ -149,3 +190,38 @@ def ent_extraction(sentence):
         tok_dep = tok.dep_
         tok_txt = tok.text
     return [ent_1.strip(), ent_2.strip()]
+
+# TODO: Unused function- wrapper around sent_
+def print_sentence(text):
+    for sentence in get_sent(text):
+        print("Sentence", sentence)
+        sent_(sentence)
+
+def get_sents(text):
+    """
+    return:     list of sentences for given text,
+                you can extract single sentence using
+                indexing. It return str object.
+    """
+    tokens = nlp(text)
+    sents = []
+    for sent in tokens.sents:
+        sents.append(sent.string.strip())
+    # print(f"We got {len(sent)} sentences")
+    logging.info('get_sents'+type(sents))
+    return sents
+
+def sentencize(text):
+    """
+    Take in text and break it into sentences
+    """
+    nlp = English()
+    nlp.add_pipe(nlp.create_pipe('sentencizer')) # updated
+    doc = nlp(text)
+    sentences = [sent.string.strip() for sent in doc.sents]
+    # sentences = nlp(text)
+    # for i, sentence in enumerate(sentences.sents):
+    #     print(i, sentence)
+    #     return sentence
+    logging.info('Sentencize'+type(sentences))
+    return sentences
