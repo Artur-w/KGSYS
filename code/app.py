@@ -1,30 +1,77 @@
 import spacy
-# import scispacy
-from spacy import displacy
-from spacy.matcher import Matcher
-from spacy.tokens import Span
 import tqdm
+import re
 import pandas as pd
-nlp = spacy.load('en_core_web_sm')
 import logging
+import scispacy
+# import neuralcoref
+import networkx
+from spacy import displacy
+from spacy.tokens import Span
+from spacy.matcher import Matcher
+from spacy.lang.en import English
+# nlp = spacy.load('en_core_web_lg')
+nlp = spacy.load('en_core_web_sm')
 # nlp = spacy.load("en_core_sci_sm")
 # TODO: need to install large model
-# nlp = spacy.load('en_core_web_lg')
+
+def sent_(text):
+    """
+    Function prints out attributes of word from spacy.
+    Parameters
+    ----------
+        text : str
+            Block of text with multiple sentences
+
+    Returns
+    -------
+    None
+    Prints attributes of token object.
+    text: Get the token text.
+    POS: part-of-speech tag.
+    DEP: dependency label.
+    """
+    sent = nlp(text)
+    for token in sent:
+        # Get the token text, part-of-speech tag and dependency label
+        token_text = token.text
+        token_pos = token.pos_
+        token_dep = token.dep_
+        print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
+
 
 # TODO: Expand cleaning function.
 def clean(text):
+    """
+    Cleaning text, removing predifiend unwanted
+    elements of sentence.
+
+    Parameters
+    ----------
+        text : str
+            Block of text with multiple sentences
+
+    Returns
+    -------
+        text : str
+            Cleaned text
+    """
     # removing new line character
     text = re.sub('\n','', str(text))
     text = re.sub('\n ','',str(text))
     # removing apostrophes
     text = re.sub("'s",'',str(text))
     # removing hyphens
-    text = re.sub("-",' ',str(text))
-    text = re.sub("- ",'',str(text))
+    text = re.sub('-',' ',str(text))
+    text = re.sub('- ','',str(text))
     # removing quotation marks
     text = re.sub('\"','',str(text))
     # removing this �, guessing it was apostrophe
-    text = re.sub("�s",'',str(text))
+    text = re.sub('�s','',str(text))
+    text = re.sub('\n#','', str(text))
+    text = re.sub(' # ',' ', str(text))
+    text = re.sub('.#',' ', str(text))
+    text = re.sub('[a-z]+�','', str(text))
     # removing paragraph numbers
     text = re.sub('[0-9]+.\t','',str(text))
     # removing new line characters
@@ -33,52 +80,45 @@ def clean(text):
     # removing apostrophes
     text = re.sub("'s",'',str(text))
     # removing hyphens
-    text = re.sub("-",' ',str(text))
-    text = re.sub("- ",'',str(text))
+    text = re.sub('-',' ',str(text))
+    text = re.sub('- ','',str(text))
     # removing quotation marks
     text = re.sub('\"','',str(text))
     # removing salutations
-    text = re.sub("Mr\.",'Mr',str(text))
-    text = re.sub("Mrs\.",'Mrs',str(text))
+    text = re.sub('Mr.','Mr',str(text))
+    text = re.sub('Mrs.','Mrs',str(text))
     # removing any reference to outside text
-    text = re.sub("[\(\[].*?[\)\]]", "", str(text))
+    # text = re.sub('[\(\[].*?[\)\]]', '', str(text))
+    # removing double space
+    text = re.sub(' +',' ',str(text))
 
     return text
 
 
-def sent_(text, dep=False):
-    """
-    Analyse sentence, breaks sentence into: text, pos, dep
-    part of speach
-    dependency
-
-    """
-    sent = nlp(text)
-    for token in sent:
-        # Get the token text, part-of-speech tag and dependency label
-        token_text = token.text
-        token_pos = token.pos_
-        token_dep = token.dep_
-        # This is for formatting only
-        print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
-    if dep==True:
-        displacy.render(sent, style='dep')
-        # print("Displacy File:",displacy.__file__)
-
+# TODO: copy to data maybe
 def get_sents(text):
     """
-    return:     list of sentences for given text,
-                you can extract single sentence using
-                indexing. It return str object.
+    This function sole pourpose is to represent look
+    of example docstring.
+
+    Parameters
+    ----------
+        text : str
+            Block of text with multiple sentences
+
+    Returns:
+            sentences (list(str)): list of sentences
+
     """
     tokens = nlp(text)
-    sents = []
+    sentences = []
     for sent in tokens.sents:
-        sents.append(sent.string.strip())
+        sentences.append(sent.text)
     # print(f"We got {len(sent)} sentences")
-    return sents
+    return sentences
 
 # get sent using pandas
+# TODO: needs pandas
 def get_sent2():
     sent_vecs = {}
     docs = []
@@ -140,11 +180,14 @@ def get_relation(sent):
 
     """
     Match 0 or more times / match 0 or 1 time(one relation in sencence?)
+    Dodałem PROPN ale jeszcze nie przetestowałem.
     """
     pattern = [{'DEP':'ROOT'},
-            {'DEP':'prep','OP':"*"},
-            {'DEP':'agent','OP':"*"},
-            {'POS':'ADJ','OP':"*"}]
+            {'DEP':'prep','OP':"?"},
+            {'DEP':'agent','OP':"?"},
+            {'POS':'PROPN','OP':'?'},
+            {'POS':'ADJ','OP':"?"}]
+    # TODO Add verb matcher?
 
     matcher.add("matching_1", None, pattern)
 
@@ -191,25 +234,6 @@ def get_entities(sentence):
         tok_txt = tok.text
     return [ent_1.strip(), ent_2.strip()]
 
-# TODO: Unused function- wrapper around sent_
-def print_sentence(text):
-    for sentence in get_sent(text):
-        print("Sentence", sentence)
-        sent_(sentence)
-
-def get_sents(text):
-    """
-    return:     list of sentences for given text,
-                you can extract single sentence using
-                indexing. It return str object.
-    """
-    tokens = nlp(text)
-    sents = []
-    for sent in tokens.sents:
-        sents.append(sent.string.strip())
-    # print(f"We got {len(sent)} sentences")
-    logging.info('get_sents'+type(sents))
-    return sents
 
 def sentencize(text):
     """
