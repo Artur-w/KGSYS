@@ -1,0 +1,141 @@
+# packages in environment at /usr/local/Caskroom/miniconda/base/envs/kgspacy2:
+#
+# Name                    Version                   Build  Channel
+appnope                   0.1.2           py36hecd8cb5_1001  
+argon2-cffi               20.1.0           py36h9ed2024_1  
+async_generator           1.10             py36h28b3542_0  
+attrs                     20.3.0             pyhd3eb1b0_0  
+backcall                  0.2.0              pyhd3eb1b0_0  
+bleach                    3.3.0              pyhd3eb1b0_0  
+boto3                     1.17.17                  pypi_0    pypi
+botocore                  1.20.17                  pypi_0    pypi
+brotlipy                  0.7.0           py36h20b66c6_1001    conda-forge
+ca-certificates           2021.1.19            hecd8cb5_0  
+catalogue                 1.0.0                    py36_1  
+certifi                   2020.12.5        py36hecd8cb5_0  
+cffi                      1.14.5           py36hfaecaff_0    conda-forge
+chardet                   4.0.0            py36h79c6626_1    conda-forge
+cryptography              3.4.4            py36h0ecfcee_0    conda-forge
+cymem                     2.0.5            py36h23ab428_0  
+cython                    0.29.22          py36h23ab428_0  
+cython-blis               0.7.4            py36h9ed2024_1  
+cytoolz                   0.9.0.1         py36h1de35cc_1001    conda-forge
+dbus                      1.13.18              h18a8e69_0  
+decorator                 4.4.2              pyhd3eb1b0_0  
+defusedxml                0.6.0              pyhd3eb1b0_0  
+dill                      0.2.9                    py36_0    conda-forge
+en-core-web-sm            2.0.0                    pypi_0    pypi
+entrypoints               0.3                      py36_0  
+expat                     2.2.10               hb1e8313_2  
+gettext                   0.19.8.1             hb0f4f8b_2  
+glib                      2.67.4               hdf23fa2_1  
+icu                       58.2                 h0a44026_3  
+idna                      2.10               pyh9f0ad1d_0    conda-forge
+importlib-metadata        2.0.0                      py_1  
+importlib_metadata        2.0.0                         1  
+iniconfig                 1.1.1              pyhd3eb1b0_0  
+ipykernel                 5.3.4            py36h5ca1d4c_0  
+ipython                   7.16.1           py36h5ca1d4c_0  
+ipython_genutils          0.2.0              pyhd3eb1b0_1  
+ipywidgets                7.6.3              pyhd3eb1b0_1  
+jedi                      0.17.0                   py36_0  
+jinja2                    2.11.3             pyhd3eb1b0_0  
+jmespath                  0.10.0                   pypi_0    pypi
+jpeg                      9b                   he5867d9_2  
+jsonschema                3.0.2                    py36_0  
+jupyter                   1.0.0                    py36_7  
+jupyter_client            6.1.7                      py_0  
+jupyter_console           6.2.0                      py_0  
+jupyter_core              4.7.1            py36hecd8cb5_0  
+jupyterlab_pygments       0.1.2                      py_0  
+jupyterlab_widgets        1.0.0              pyhd3eb1b0_1  
+libblas                   3.9.0                8_openblas    conda-forge
+libcblas                  3.9.0                8_openblas    conda-forge
+libcxx                    11.0.1               habf9029_0    conda-forge
+libffi                    3.3                  h046ec9c_2    conda-forge
+libgfortran               5.0.0           9_3_0_h6c81a4c_19    conda-forge
+libgfortran5              9.3.0               h6c81a4c_19    conda-forge
+libiconv                  1.16                 h1de35cc_0  
+liblapack                 3.9.0                8_openblas    conda-forge
+libopenblas               0.3.12          openmp_h54245bb_1    conda-forge
+libpng                    1.6.37               ha441bb4_0  
+libsodium                 1.0.18               h1de35cc_0  
+llvm-openmp               11.0.1               h7c73e74_0    conda-forge
+markupsafe                1.1.1            py36h1de35cc_0  
+mistune                   0.8.4            py36h1de35cc_0  
+more-itertools            8.7.0              pyhd3eb1b0_0  
+msgpack-numpy             0.4.7.1            pyh9f0ad1d_0    conda-forge
+msgpack-python            0.5.6           py36h04f5b5a_1003    conda-forge
+murmurhash                0.28.0          py36h4a8c4bd_1001    conda-forge
+nbclient                  0.5.3              pyhd3eb1b0_0  
+nbconvert                 6.0.7                    py36_0  
+nbformat                  5.1.2              pyhd3eb1b0_1  
+ncurses                   6.2                  h2e338ed_4    conda-forge
+nest-asyncio              1.5.1              pyhd3eb1b0_0  
+notebook                  6.2.0            py36hecd8cb5_0  
+numpy                     1.19.5           py36h08dc641_1    conda-forge
+openssl                   1.1.1j               h9ed2024_0  
+packaging                 20.9               pyhd3eb1b0_0  
+pandoc                    2.11                 h0dc7051_0  
+pandocfilters             1.4.3            py36hecd8cb5_1  
+parso                     0.8.1              pyhd3eb1b0_0  
+pcre                      8.44                 hb1e8313_0  
+pexpect                   4.8.0              pyhd3eb1b0_3  
+pickleshare               0.7.5           pyhd3eb1b0_1003  
+pip                       21.0.1             pyhd8ed1ab_0    conda-forge
+plac                      0.9.6                      py_1    conda-forge
+pluggy                    0.13.1                   py36_0  
+preshed                   3.0.2            py36h23ab428_1  
+prometheus_client         0.9.0              pyhd3eb1b0_0  
+prompt-toolkit            3.0.8                      py_0  
+prompt_toolkit            3.0.8                         0  
+ptyprocess                0.7.0              pyhd3eb1b0_2  
+py                        1.10.0             pyhd3eb1b0_0  
+pycparser                 2.20               pyh9f0ad1d_2    conda-forge
+pygments                  2.8.0              pyhd3eb1b0_0  
+pyopenssl                 20.0.1             pyhd8ed1ab_0    conda-forge
+pyparsing                 2.4.7              pyhd3eb1b0_0  
+pyqt                      5.9.2            py36h655552a_2  
+pyrsistent                0.17.3           py36haf1e3a3_0  
+pysocks                   1.7.1            py36h79c6626_3    conda-forge
+pytest                    6.2.2            py36hecd8cb5_2  
+python                    3.6.13          h7728216_0_cpython    conda-forge
+python-dateutil           2.8.1              pyhd3eb1b0_0  
+python_abi                3.6                     1_cp36m    conda-forge
+pyzmq                     20.0.0           py36h23ab428_1  
+qt                        5.9.7                h468cd18_1  
+qtconsole                 5.0.2              pyhd3eb1b0_0  
+qtpy                      1.9.0                      py_0  
+readline                  8.0                  h0678c8f_2    conda-forge
+regex                     2017.11.09               py36_0    conda-forge
+requests                  2.25.1             pyhd3deb0d_0    conda-forge
+s3transfer                0.3.4                    pypi_0    pypi
+send2trash                1.5.0              pyhd3eb1b0_1  
+setuptools                49.6.0           py36h79c6626_3    conda-forge
+sip                       4.19.8           py36h0a44026_0  
+six                       1.15.0             pyh9f0ad1d_0    conda-forge
+spacy                     2.3.5            py36hf7b0b51_0  
+sqlite                    3.34.0               h17101e1_0    conda-forge
+srsly                     1.0.5            py36h23ab428_0  
+termcolor                 1.1.0                      py_2    conda-forge
+terminado                 0.9.2            py36hecd8cb5_0  
+testpath                  0.4.4              pyhd3eb1b0_0  
+thinc                     7.4.5            py36h1341a74_0  
+tk                        8.6.10               h0419947_1    conda-forge
+toml                      0.10.1                     py_0  
+toolz                     0.11.1                     py_0    conda-forge
+tornado                   6.1              py36h9ed2024_0  
+tqdm                      4.58.0             pyhd8ed1ab_0    conda-forge
+traitlets                 4.3.3                    py36_0  
+ujson                     4.0.2            py36h22858aa_0    conda-forge
+urllib3                   1.26.3             pyhd8ed1ab_0    conda-forge
+wasabi                    0.8.2              pyhd3eb1b0_0  
+wcwidth                   0.2.5                      py_0  
+webencodings              0.5.1                    py36_1  
+wheel                     0.36.2             pyhd3deb0d_0    conda-forge
+widgetsnbextension        3.5.1                    py36_0  
+wrapt                     1.12.1           py36h20b66c6_3    conda-forge
+xz                        5.2.5                haf1e3a3_1    conda-forge
+zeromq                    4.3.3                hb1e8313_3  
+zipp                      3.4.0              pyhd3eb1b0_0  
+zlib                      1.2.11            h7795811_1010    conda-forge

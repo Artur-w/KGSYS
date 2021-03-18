@@ -54,20 +54,16 @@ def main():
     # print(candidate_sentences['sentence'].sample(5))
     rand = random.randint(0,len(candidate_sentences['sentence']))
     # some_sent = Triple(candidate_sentences['sentence'][rand])
-    trip = Triple(user_input,spacy.load('en_core_web_sm'),nlp(text))
-    print(trip.get_entities())
-    print(trip.get_relation())
-    print(trip.get_triple())
+    # trip = Triple(user_input,spacy.load('en_core_web_sm'),nlp(text))
+    mytrip = Triple("John bought new car and drove it.")
+    print(mytrip.get_entities())
+    print(mytrip.get_relation())
+    print(mytrip.get_triple())
     # relation = Triple.get_relation
     # get_triple()
     # get_entities()
     # displacy.serve(next(doc.sents), style='dep')
     # print(some_sent)
-
-
-
-
-
 
 
     # doc = nlp("An engineer had to plan the construction of an artificial lake to produce electric energy.")

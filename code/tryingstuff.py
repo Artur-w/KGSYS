@@ -1,39 +1,24 @@
-from app import sent_, get_relation, ent_extraction, foosent,graph
 
-list_of_sents = [ex0,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8]
-for sent in list_of_sents:
-    print(get_relation(sent))
-    print(ent_extraction(sent))
-    print(sent_(sent))
+def sent_(text):
+    """
+    Function prints out attributes of word from spacy.
+    Parameters
+    ----------
+        text : str
+            Block of text with multiple sentences
 
-
-# Get root of sentence
-def n_chunk(sent):
-    roots = ''
-    doc = nlp(sent)
-    for chunk in doc.noun_chunks:
-        print(f"\nChunk Text: {chunk.text}\n-> Root: {chunk.root.text}\n-> Arc label:{chunk.root.dep_}\n-> Root head: {chunk.root.head.text}\n")
-        roots += chunk.root.text+ ' ' +chunk.root.head.text+' '
-
-    return roots
-# print(n_chunk(get_sent(text)[1]))
-
-def noun_chunks_sent(sentence):
-    '''
-    Take in single sntence and output
-    nound chunks
-    '''
-
-    sent = nlp(sentence)
-    for chunk in sent.noun_chunks:
-        print("Chunk: ",chunk)
-
-def noun_component(text):
-    doc = nlp(text)
-    print("Noun phrases:", [chunk.text for chunk in doc.noun_chunks])
-    print("Verbs:", [token.lemma_ for token in doc if token.pos_ == "VERB"])
-
-def noun_component_list(text):
-    doc = nlp(text)
-    chunks = list(doc.noun_chunks)
-    return chunks
+    Returns
+    -------
+    None
+    Prints attributes of token object.
+    text: Get the token text.
+    POS: part-of-speech tag.
+    DEP: dependency label.
+    """
+    sent = nlp(text)
+    for token in sent:
+        # Get the token text, part-of-speech tag and dependency label
+        token_text = token.text
+        token_pos = token.pos_
+        token_dep = token.dep_
+        print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))

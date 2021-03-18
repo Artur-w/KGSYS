@@ -3,29 +3,12 @@ import spacy
 import sys
 from spacy.matcher import Matcher
 from data import ex0
-# global text
-# global doc
 from spacy import displacy
-
-try:
-    user_input = sys.argv[1]
-    text = user_input
-except:
-    text = "Because of their wellknown stance as activists, many members of the faculty have been called to testify before Congress."
-    pass
-if text == "":
-    print("no input entered")
-else:
-    print("User input ->",type(text))
-
-nlp = spacy.load('en_core_web_sm')
-doc = nlp(text)
-
 class Triple:
     """
     A class to combine all components of pipeline
     for extracting triple from sentence, but probably it doesnt make
-    sens to use clas for that, but well why the hell not?
+    sense to use class for that, but well why the hell not?
 
     ...
 
@@ -46,12 +29,8 @@ class Triple:
     info(additional=""):
         Prints the triple's name and age.
     """
-    # global nlp
-    # global doc
-    # global text
-    # TODO: default args?
-    # def __init__(self, text, s, v, o):
-    def __init__(self, text, nlp, doc):
+
+    def __init__(self, text):
         """
         Constructs all the necessary attributes for the triple object.
 
@@ -67,13 +46,18 @@ class Triple:
             object : str
                 object or objects of the text or the sentence
         """
-        # nlp = spacy.load('en_core_web_sm')
         self.text = text
-        self.nlp = nlp
-        self.doc = doc
-        # self.s = subject
-        # self.v = relation
-        # self.o = object
+        global nlp
+        global doc
+        nlp = spacy.load('en_core_web_sm')
+        doc = nlp(self.text)
+
+    # TODO: CHYBA DZIALA BEZ SETUP
+    # def setup(self):
+        # global nlp
+        # global doc
+        # nlp = spacy.load('en_core_web_sm')
+        # doc = nlp(self.text)
 
     def get_relation(self):
         """
@@ -109,13 +93,13 @@ class Triple:
         return(span.text)
 
     def get_triple(self):
-        doc = nlp(text)
+        doc = nlp(self.text)
         sent = []
         # TODO: change doc to nlp()
         for token in doc:
             # if the token is a verb
             if (token.pos_ in ['VERB','ROOT']):
-                phrase =''
+                phrase = ''
                 # only extract noun or pronoun subjects
                 for sub_tok in token.lefts:
                     if (sub_tok.dep_ in ['nsubj','nsubjpass']) and (sub_tok.pos_ in ['NOUN','PROPN','PRON']):
@@ -173,11 +157,21 @@ class Triple:
         return [ent_1.strip(), ent_2.strip()]
 
     def graph0():
-        pass
+        doc = nlp(sent)
+        displacy.render(doc, style='dep')
+
     def graph1():
         pass
     def graph2():
         pass
+
+    def set_doc(self,text):
+        doc = nlp(self.text)
+        return doc
+
+    def set_model(self,model):
+        nlp = spacy.load(model)
+        return nlp
 
     def info(self, additional=""):
         """
@@ -201,7 +195,6 @@ class Triple:
     # get_triple()
     # get_entities()
     # displacy.serve(next(doc.sents), style='dep')
-
 
 
 def exampledocString(text, file, path):
