@@ -56,20 +56,12 @@ class Triple:
         global doc
         doc = nlp(self.text)
 
-    # TODO: CHYBA DZIALA BEZ SETUP
-    # def setup(self):
-        # global nlp
-        # global doc
-        # nlp = spacy.load('en_core_web_sm')
-        # doc = nlp(self.text)
-
-
-    def relation(sentence):
+    def relation(self):
         """
         Get relation within input sentenceence based on pattern provided.
         params: str - input of single sentenceence.
         """
-        doc = nlp(sentence)
+        doc = nlp(self.text)
 
         # Matcher class object
         matcher = Matcher(nlp.vocab, validate=True)
@@ -77,7 +69,15 @@ class Triple:
         """
         Match 0 or more times / match 0 or 1 time(one relation in sencence?)
         Dodałem PROPN ale jeszcze nie przetestowałem.
+
+
+        OP	DESCRIPTION
+        !	Negate the pattern, by requiring it to match exactly 0 times.
+        ?	Make the pattern optional, by allowing it to match 0 or 1 times.
+        +	Require the pattern to match 1 or more times.
+        *	Allow the pattern to match zero or more times.
         """
+        # in some cases pattern0 matches too many words.
         pattern0=[{'POS': 'VERB', 'OP': '?'},
                 {'POS': 'ADV', 'OP': '*'},
                 {'OP': '*'}, # additional wildcard - match any text in between
@@ -88,14 +88,13 @@ class Triple:
                 {'POS':'PROPN','OP':'?'},
                 {'POS':'ADJ','OP':"?"}]
         pattern = [{'POS': 'VERB', 'OP': '?'},
-            {'POS': 'ADV', 'OP': '*'},
-            {'POS': 'AUX', 'OP': '*'},
-            {'POS': 'VERB', 'OP': '+'}]
+                {'POS': 'ADV', 'OP': '?'},
+                {'POS': 'AUX', 'OP': '?'},
+                {'POS': 'VERB', 'OP': '?'}]
         pattern2 = [{'DEP':'ROOT'}, 
                 {'DEP':'prep','OP':"?"},
                 {'DEP':'agent','OP':"?"},  
                 {'POS':'ADJ','OP':"?"}] 
-        # pattern = [{'POS': 'VERB', 'OP': '?'}, {'POS': 'ADV', 'OP': ''}, {'OP': ''}, {'POS': 'VERB', 'OP': '+'}]
 
         matcher.add("Verb phrase", [pattern2])
 
@@ -103,8 +102,8 @@ class Triple:
         matches = matcher(doc)
         spans = [doc[start:end] for _, start, end in matches]
 
-        res = filter_spans(spans)
-        return res
+        relation = filter_spans(spans)
+        return relation
 
     def entities(self):
         entity1 = ""
@@ -156,7 +155,7 @@ class Triple:
                 # update variables
                 prv_tok_dep = token.dep_
                 prv_tok_text = token.text
-    
+            #TODO: something wrong with this ifs
             # If subject not captured use person entity
             if entity1.strip() == '' and len(persons) > 1:
                 entity1 = persons[0]
@@ -171,14 +170,16 @@ class Triple:
         print("my persons ",persons)
         return [entity1, entity2.strip()]
 
-    def graph0(self):
+    def dependency_graph(self):
         doc = nlp(self.text)
         displacy.render(doc, style='dep')
 
-    def graph1():
+    def graph(self):
+        # TODO: add networkx graph genration function
         pass
-
-    def graph2():
+    
+    def tree_graph(self):
+        # TODO: add visualise spacy tree function here.
         pass
 
     def set_model(self,model):
@@ -200,26 +201,3 @@ class Triple:
         -------
         None
         """
-
-        # print(f'My name is {self.text} {self.nlp}. I am {self.age} years old.' + additional)
-
-    # get_relation()
-    # get_triple()
-    # get_entities()
-    # displacy.serve(next(doc.sents), style='dep')
-
-
-def exampledocString(text, file, path):
-    """
-    This function sole pourpose is to represent look
-    of example docstring.
-
-    Parameters
-    ----------
-        text : str
-            Block of text with multiple sentences
-        file : str
-            Path to file
-        path : int
-            some additional parameter with type int
-    """
