@@ -2,8 +2,13 @@
 import spacy
 import sys
 from spacy.matcher import Matcher
-from data import ex0
 from spacy import displacy
+from spacy.util import filter_spans
+
+# this is invisible for class?
+nlp = spacy.load('en_core_web_sm')
+# TODO: rework get entitirs
+
 class Triple:
     """
     A class to combine all components of pipeline
@@ -49,7 +54,6 @@ class Triple:
         self.text = text
         global nlp
         global doc
-        nlp = spacy.load('en_core_web_sm')
         doc = nlp(self.text)
 
     # TODO: CHYBA DZIALA BEZ SETUP
@@ -59,115 +63,123 @@ class Triple:
         # nlp = spacy.load('en_core_web_sm')
         # doc = nlp(self.text)
 
-    def get_relation(self):
+
+    def relation(sentence):
         """
-        Get relation within input sentence based on pattern provided.
-        params: str - input of single sentence.
+        Get relation within input sentenceence based on pattern provided.
+        params: str - input of single sentenceence.
         """
-        # doc = nlp(text)
+        doc = nlp(sentence)
+
         # Matcher class object
         matcher = Matcher(nlp.vocab, validate=True)
-
-        #define the pattern
-        # TODO: explore matcher
 
         """
         Match 0 or more times / match 0 or 1 time(one relation in sencence?)
         Dodałem PROPN ale jeszcze nie przetestowałem.
         """
-        pattern = [{'DEP':'ROOT'},
+        pattern0=[{'POS': 'VERB', 'OP': '?'},
+                {'POS': 'ADV', 'OP': '*'},
+                {'OP': '*'}, # additional wildcard - match any text in between
+                {'POS': 'VERB', 'OP': '+'}]
+        pattern1 = [{'DEP':'ROOT'},
                 {'DEP':'prep','OP':"?"},
                 {'DEP':'agent','OP':"?"},
                 {'POS':'PROPN','OP':'?'},
                 {'POS':'ADJ','OP':"?"}]
-        # TODO Add verb matcher?
+        pattern = [{'POS': 'VERB', 'OP': '?'},
+            {'POS': 'ADV', 'OP': '*'},
+            {'POS': 'AUX', 'OP': '*'},
+            {'POS': 'VERB', 'OP': '+'}]
+        pattern2 = [{'DEP':'ROOT'}, 
+                {'DEP':'prep','OP':"?"},
+                {'DEP':'agent','OP':"?"},  
+                {'POS':'ADJ','OP':"?"}] 
+        # pattern = [{'POS': 'VERB', 'OP': '?'}, {'POS': 'ADV', 'OP': ''}, {'OP': ''}, {'POS': 'VERB', 'OP': '+'}]
 
-        matcher.add("matching_1", [pattern])
+        matcher.add("Verb phrase", [pattern2])
 
+        # call the matcher to find matches 
         matches = matcher(doc)
-        k = len(matches) - 1
+        spans = [doc[start:end] for _, start, end in matches]
 
-        span = doc[matches[k][1]:matches[k][2]]
+        res = filter_spans(spans)
+        return res
 
-        # print(span.text)
-        return(span.text)
+    def entities(self):
+        entity1 = ""
+        entity2 = ""
 
-    def get_triple(self):
+        prv_tok_dep = ""    # dependency tag of previous token in the sentence
+        prv_tok_text = ""   # previous token in the sentence
+
+        prefix = ""
+        modifier = ""
+        person = ""
+        persons = []
+
         doc = nlp(self.text)
-        sent = []
-        # TODO: change doc to nlp()
+        ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
+        print('Entities', ents)
+        for item in doc.ents:
+            print(len(doc.ents))
+            if item.label_ == 'PERSON':
+                # look for person entities.
+                persons.append(str(item.text))
+        print(persons)
         for token in doc:
-            # if the token is a verb
-            if (token.pos_ in ['VERB','ROOT']):
-                phrase = ''
-                # only extract noun or pronoun subjects
-                for sub_tok in token.lefts:
-                    if (sub_tok.dep_ in ['nsubj','nsubjpass']) and (sub_tok.pos_ in ['NOUN','PROPN','PRON']):
-                        # add subject to the phrase
-                        phrase += sub_tok.text
-                        # save the root of the verb in phrase
-                        phrase += ' '+token.lemma_
-                        # check for noun or pronoun direct objects
-                        for sub_tok in token.rights:
-                            # save the object in the phrase
-                            if (sub_tok.dep_ in ['dobj']) and (sub_tok.pos_ in ['NOUN','PROPN']):
-                                phrase += ' '+sub_tok.text
-                                sent.append(phrase)
+            # igonre punctuation
+            if token.dep_ != 'punkt':
+                # include compoound words
+                if token.dep_ == 'compound':
+                    prefix = token.text
+                    if prv_tok_dep == 'compound':
+                        prefix = prv_tok_text + " " + token.text
+                # check if token is a modifier
+                if token.dep_.endswith('mod') == True:
+                    modifier = token.text
+                    if prv_tok_dep == 'compound':
+                        modifier = prv_tok_text + " " + token.text
+                # find any form/kind of subject
+                if token.dep_.find('subj') == True:
+                    # create entity1, subject
+                    entity1 = modifier + " " + prefix + " " + token.text
+                    # reset variables
+                    prefix = ""
+                    modifier = ""
+                    prv_tok_dep = ""
+                    prv_tok_text = ""
+                # find potential object in the sentence.
+                if token.dep_.find('obj') == True:
+                    entity2 = modifier + " " + prefix + " " + token.text
 
-        # print(sent)
-        return sent
+                # update variables
+                prv_tok_dep = token.dep_
+                prv_tok_text = token.text
+    
+            # If subject not captured use person entity
+            if entity1.strip() == '' and len(persons) > 1:
+                entity1 = persons[0]
+            else: 
+                entity1 = person
+                # if object not captured use other
+                if entity2.strip() == '':
+                    if len(persons) > 1:
+                        entity2 = persons[1]
+                    else:
+                        entity2 = modifier + " " + prefix + " " + token.text
+        print("my persons ",persons)
+        return [entity1, entity2.strip()]
 
-    def get_entities(self):
-
-        # store entities in variable - object subject
-        ent_1 = ''
-        ent_2 = ''
-        tok_dep = '' # dependency tag of previous token in the sentence
-        tok_txt = '' # previous token in the senetence
-        pfx = ''
-        mod = ''
-
-        for tok in doc:
-            if tok.dep_ != 'punct':
-                if tok.dep_ == 'compound':
-                    pfx = tok.text
-                    if tok.dep_ == 'compound':
-                        pfx = tok_txt +" "+tok.text
-
-            if tok.dep_.endswith('mod') == True:
-                mod = tok.text
-                if tok.dep_ == 'compound':
-                    mod = tok_txt+" "+tok.text
-
-            if tok.dep_.find("subj") == True:
-                ent_1 = mod+" "+pfx+" "+tok.text
-                tok_txt =''
-                tok_dep=''
-                pfx = ''
-                mod =''
-
-            if tok.dep_.find("obj") == True:
-                ent_2 = mod+" "+pfx+" "+tok.text
-
-            tok_dep = tok.dep_
-            tok_txt = tok.text
-
-        xx = [ent_1.strip(), ent_2.strip()]
-        # print(xx)
-        return [ent_1.strip(), ent_2.strip()]
-
-    def graph0():
-        doc = nlp(sent)
+    def graph0(self):
+        doc = nlp(self.text)
         displacy.render(doc, style='dep')
 
     def graph1():
         pass
+
     def graph2():
         pass
-
-    def set_doc(self,text):
-        doc = nlp(self.text)
-        return doc
 
     def set_model(self,model):
         nlp = spacy.load(model)
@@ -211,8 +223,3 @@ def exampledocString(text, file, path):
         path : int
             some additional parameter with type int
     """
-# Tags I've chosen for relations
-deps = ["ROOT", "adj", "attr", "agent", "amod"]
-
-# Tags I've chosen for entities(subjects and objects)
-deps = ["compound", "prep", "conj", "mod"]

@@ -3,39 +3,22 @@
 # TODO: Look for preposition
 # TODO: do need all that imports, probably.
 import re
-import pandas as pd
+import sys
 import random
-# import bs4
-# import requests
 import spacy
-from spacy import displacy
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
 # TODO: use scispacy model.
-
+from spacy import displacy
 from spacy.matcher import Matcher
 from spacy.tokens import Span
 from Triple import Triple
-import networkx as nx
-import sys
-import matplotlib.pyplot as plt
 from tqdm import tqdm
-# from app import get_entities, get_relation, sent_, get_triple
-import pandas as pd
+
 
 nlp = spacy.load('en_core_web_sm')
-# text = user_input
-try:
-    user_input = sys.argv[1]
-    text = user_input
-except:
-    text = "Because of their wellknown stance as activists, many members of the faculty have been called to testify before Congress."
-    pass
-if text == "":
-    print("no input entered")
-else:
-    print("User input ->",type(text))
 
-
-# doc = nlp(text)
 
 def _read_in():
     with open("/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.txt") as file:
@@ -48,8 +31,144 @@ def _read_in():
 path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv"
 candidate_sentences = pd.read_csv(path_to_csv)
 
-def main():
+# TODO: Expand cleaning function.
+def clean(text):
+    """
+    Cleaning text, removing predifiend unwanted
+    elements of sentence.
 
+    Parameters
+    ----------
+        text : str
+            Block of text with multiple sentences
+
+    Returns
+    -------
+        text : str
+            Cleaned text
+    """
+    # removing new line character
+    text = re.sub('\n','', str(text))
+    text = re.sub('\n ','',str(text))
+    # removing apostrophes
+    text = re.sub("'s",'',str(text))
+    # removing hyphens
+    text = re.sub('-',' ',str(text))
+    text = re.sub('- ','',str(text))
+    # removing quotation marks
+    text = re.sub('\"','',str(text))
+    # removing this �, guessing it was apostrophe
+    text = re.sub('�s','',str(text))
+    text = re.sub('\n#','', str(text))
+    text = re.sub(' # ',' ', str(text))
+    text = re.sub('.#',' ', str(text))
+    text = re.sub('[a-z]+�','', str(text))
+    # removing paragraph numbers
+    text = re.sub('[0-9]+.\t','',str(text))
+    # removing new line characters
+    text = re.sub('\n ','',str(text))
+    text = re.sub('\n',' ',str(text))
+    # removing apostrophes
+    text = re.sub("'s",'',str(text))
+    # removing hyphens
+    text = re.sub('-',' ',str(text))
+    text = re.sub('- ','',str(text))
+    # removing quotation marks
+    text = re.sub('\"','',str(text))
+    # removing salutations
+    text = re.sub('Mr.','Mr',str(text))
+    text = re.sub('Mrs.','Mrs',str(text))
+    # text = re.sub('[',' ',str(text))
+    # text = re.sub(']',' ',str(text))
+    # removing any reference to outside text
+    # text = re.sub('[\(\[].*?[\)\]]', '', str(text))
+    # removing double space
+    text = re.sub(' +',' ',str(text))
+
+    return text
+
+def sent_(text):
+    """
+    Function prints out attributes of word from spacy.
+    Parameters
+    ----------
+        text : str
+            Block of text with multiple sentences
+
+    Returns
+    -------
+    None
+    Prints attributes of token object.
+    text: Get the token text.
+    POS: part-of-speech tag.
+    DEP: dependency label.
+    """
+    sent = nlp(text)
+    print ("TEXT" , "POS", "DEP")
+    for token in sent:
+        # Get the token text, part-of-speech tag and dependency label
+        token_text = token.text
+        token_pos = token.pos_
+        token_dep = token.dep_
+        print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
+
+
+# # TODO: copy to data maybe
+def get_sents(text):
+    """
+    This function sole pourpose is to represent look
+    of example docstring.
+
+    Parameters
+    ----------
+    text : str
+            Block of text with multiple sentences
+
+    Returns:
+            sentences (list(str)): list of sentences
+
+    """
+    tokens = nlp(text)
+    sentences = []
+    for sent in tokens.sents:
+        sentences.append(sent.text)
+    # print(f"We got {len(sent)} sentences")
+    return sentences
+
+def fileconvert(path_to_folder,path_to_csv_output):
+    """
+    path_to_folder: Path to folder containing .txt files we want to use.
+    Read in direcory of files, look for .txt extension,
+    extract sentences from text, save sentences in one csv file,
+    """
+    # path_to_folder = '/Users/awenc/NUIM/CS440/KG_NLPSystem/data/Psychology Test Materials'
+    # path_to_csv_output = '/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.csv'
+
+    from pathlib import Path
+    p = Path(path_to_folder)
+    for name in p.glob('*.txt'):
+        f = open(name, 'r')
+        line = f.read()
+        line = clean(line)
+        # print(line)
+        get_sent = get_sents(line)
+        len(get_sents(line))
+        outfile = open('./sentences_temp.txt','a')
+        for i in get_sent:
+            # print(type(i)) # <class 'spacy.tokens.span.Span'>
+            # print(str(i))
+            outfile.write(str(i)+"\n")
+    """
+    Wrap each line in quotes in order to make data digastable by pandas DataFrame
+    """
+    with open('./sentences_temp.txt','r') as f:
+        x= f.readlines()
+        with open(path_to_csv_output,'w') as fw:
+            fw.write("sentences"+"\n")
+            for line in x:
+                fw.write('\"'+line.strip('\n').strip('\r')+'\"\n')
+
+def main():
     # print(candidate_sentences.shape)
     # print(candidate_sentences['sentence'].sample(5))
     rand = random.randint(0,len(candidate_sentences['sentence']))
