@@ -5,9 +5,7 @@ from spacy.matcher import Matcher
 from spacy import displacy
 from spacy.util import filter_spans
 
-# this is invisible for class?
 nlp = spacy.load('en_core_web_sm')
-# TODO: rework get entitirs
 
 class Triple:
     """
@@ -91,14 +89,14 @@ class Triple:
                 {'POS': 'ADV', 'OP': '?'},
                 {'POS': 'AUX', 'OP': '?'},
                 {'POS': 'VERB', 'OP': '?'}]
-        pattern2 = [{'DEP':'ROOT'}, 
+        pattern2 = [{'DEP':'ROOT'},
                 {'DEP':'prep','OP':"?"},
-                {'DEP':'agent','OP':"?"},  
-                {'POS':'ADJ','OP':"?"}] 
+                {'DEP':'agent','OP':"?"},
+                {'POS':'ADJ','OP':"?"}]
 
         matcher.add("Verb phrase", [pattern2])
 
-        # call the matcher to find matches 
+        # call the matcher to find matches
         matches = matcher(doc)
         spans = [doc[start:end] for _, start, end in matches]
 
@@ -127,7 +125,7 @@ class Triple:
                 persons.append(str(item.text))
         print(persons)
         for token in doc:
-            # igonre punctuation
+            # igonre punctuation (eg: --token)
             if token.dep_ != 'punkt':
                 # include compoound words
                 if token.dep_ == 'compound':
@@ -155,7 +153,7 @@ class Triple:
                 # update variables
                 prv_tok_dep = token.dep_
                 prv_tok_text = token.text
-            #TODO: something wrong with this ifs
+            #TODO: something wrong with ifs
             # If subject not captured use person entity
             if entity1.strip() == '' and len(persons) > 1:
                 entity1 = persons[0]
