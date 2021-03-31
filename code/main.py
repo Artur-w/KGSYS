@@ -1,35 +1,37 @@
-# from sentence_components import *
-# TODO: clean up all that code for fuck sake!
-# TODO: Look for preposition
 # TODO: do need all that imports, probably.
-import re
-import sys
-import random
-import spacy
+# import re
+# import sys
+# import random
+# import spacy
+# import scispacy
 import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-# TODO: use scispacy model.
-from spacy import displacy
-from spacy.matcher import Matcher
-from spacy.tokens import Span
+# import networkx as nx
+# import matplotlib.pyplot as plt
+# # TODO: use scispacy model.
+# from spacy import displacy
+# from spacy.matcher import Matcher
+# from spacy.tokens import Span
 from Triple import Triple
-from tqdm import tqdm
-
-
-nlp = spacy.load('en_core_web_sm')
-
-
-def _read_in():
-    with open("/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.txt") as file:
-        for line in file:
-            print(line)
+# from tqdm import tqdm
+# from spacy.util import filter_spans
+# import visualise_spacy_tree
+# from pathlib import Path
 
 # /Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv
 # /Users/awenc/NUIM/CS440/KG_NLPSystem/data/wiki_sentences_v2.csv
 # /Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv
-path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv"
-candidate_sentences = pd.read_csv(path_to_csv)
+
+# path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv"
+# data_sentences = pd.read_csv(path_to_csv)
+# print(len(data_sentences['sentences']))
+# path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv"
+# psycho_sentences = pd.read_csv(path_to_csv)
+# print(len(psycho_sentences['sentences']))
+path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/data-covid/sentences_covid_v2.csv"
+covid_sentences = pd.read_csv(path_to_csv)
+ptc = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sample_data.csv"
+sample_data = pd.read_csv(ptc)
+print(len(sample_data['sentences']))
 
 # TODO: Expand cleaning function.
 def clean(text):
@@ -78,8 +80,8 @@ def clean(text):
     # removing salutations
     text = re.sub('Mr.','Mr',str(text))
     text = re.sub('Mrs.','Mrs',str(text))
-    # text = re.sub('[',' ',str(text))
-    # text = re.sub(']',' ',str(text))
+    text = re.sub(r'\[',' ',str(text))
+    text = re.sub(r'\]',' ',str(text))
     # removing any reference to outside text
     # text = re.sub('[\(\[].*?[\)\]]', '', str(text))
     # removing double space
@@ -113,132 +115,48 @@ def sent_(text):
         print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
 
 
-# # TODO: copy to data maybe
-def get_sents(text):
-    """
-    This function sole pourpose is to represent look
-    of example docstring.
-
-    Parameters
-    ----------
-    text : str
-            Block of text with multiple sentences
-
-    Returns:
-            sentences (list(str)): list of sentences
-
-    """
-    tokens = nlp(text)
-    sentences = []
-    for sent in tokens.sents:
-        sentences.append(sent.text)
-    # print(f"We got {len(sent)} sentences")
-    return sentences
-
-def fileconvert(path_to_folder,path_to_csv_output):
-    """
-    path_to_folder: Path to folder containing .txt files we want to use.
-    Read in direcory of files, look for .txt extension,
-    extract sentences from text, save sentences in one csv file,
-    """
-    # path_to_folder = '/Users/awenc/NUIM/CS440/KG_NLPSystem/data/Psychology Test Materials'
-    # path_to_csv_output = '/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.csv'
-
-    from pathlib import Path
-    p = Path(path_to_folder)
-    for name in p.glob('*.txt'):
-        f = open(name, 'r')
-        line = f.read()
-        line = clean(line)
-        # print(line)
-        get_sent = get_sents(line)
-        len(get_sents(line))
-        outfile = open('./sentences_temp.txt','a')
-        for i in get_sent:
-            # print(type(i)) # <class 'spacy.tokens.span.Span'>
-            # print(str(i))
-            outfile.write(str(i)+"\n")
-    """
-    Wrap each line in quotes in order to make data digastable by pandas DataFrame
-    """
-    with open('./sentences_temp.txt','r') as f:
-        x= f.readlines()
-        with open(path_to_csv_output,'w') as fw:
-            fw.write("sentences"+"\n")
-            for line in x:
-                fw.write('\"'+line.strip('\n').strip('\r')+'\"\n')
-
 def main():
-    # print(candidate_sentences.shape)
-    # print(candidate_sentences['sentence'].sample(5))
-    rand = random.randint(0,len(candidate_sentences['sentence']))
-    # some_sent = Triple(candidate_sentences['sentence'][rand])
-    # trip = Triple(user_input,spacy.load('en_core_web_sm'),nlp(text))
-    mytrip = Triple("John bought new car and drove it.")
-    print(mytrip.get_entities())
-    print(mytrip.get_relation())
-    print(mytrip.get_triple())
-    # relation = Triple.get_relation
-    # get_triple()
-    # get_entities()
-    # displacy.serve(next(doc.sents), style='dep')
-    # print(some_sent)
-
-
-    # doc = nlp("An engineer had to plan the construction of an artificial lake to produce electric energy.")
-    # for tok in doc:
-    #     print(tok.text, "...", tok.dep_)
-    # print(get_entities("An engineer had to plan the construction of an artificial lake to produce electric energy."))
+    # # TODO: PureWindowsPath?
+    # triples = []
     # entity_pairs = []
-    # # Entity pairs
-    # try:
-    #     for i in tqdm(candidate_sentences["sentences"]):
-    #         entity_pairs.append(ent_extraction(i))
-    #     print(entity_pairs[:])
+    # relations = []
 
-    #     print(pd.Series(relations).value_counts()[:])
+    # # output_folder = Path('./output/')
+    # # top_relations_file = output_folder / "toprelations.txt"
 
-    #     # extract subject
-    #     source = [i[0] for i in entity_pairs]
-    #     # Relation
-    #     relations = [get_relation(i) for i in tqdm(candidate_sentences['sentences'])]
-    #     # extract object
-    #     target = [i[1] for i in entity_pairs]
+    # for i in tqdm(covid_sentences['sentence']):
+    #     entity_pairs.append(Triple(str(i)).entities())
+    #     relations.append(Triple(str(i)).relation())
 
-    #     kg_df = pd.DataFrame({'source':source, 'target':target, 'edge':relations})
-    #     # create a directed-graph from a dataframe
-    #     G=nx.from_pandas_edgelist(kg_df, "source", "target", edge_attr=True, create_using=nx.MultiDiGraph())
-    #     plt.figure(figsize=(12,12))
+    # # entities()
+    # object_ = [i[0] for i in tqdm(entity_pairs)]
+    # subject_ = [i[1] for i in entity_pairs]
+    # relations_ = [i for i in relations]
+    # print(f"{len(object_)} {len(subject_)} {len(relations_)}")
 
-    #     pos = nx.spring_layout(G)
-    #     nx.draw(G, with_labels=True, node_color='skyblue', edge_cmap=plt.cm.Blues, pos = pos)
-    #     plt.show()
-    # except TypeError as e:
-    #     print(e)
-    #     pass
-    # except:
-    #     print("unexprected error ")
-    #     pass
+    myT = Triple("London is the capital and largest city of England and the United Kingdom. Standing on the River ").get_triple()
+    # covid_sentences['sentence'][0]
+    # print(myT)
+    text = "London is the capital and largest city of England and the United Kingdom. Standing on the River " \
+           "Thames in the south-east of England, at the head of its 50-mile (80 km) estuary leading to " \
+           "the North Sea, London has been a major settlement for two millennia. " \
+           "Londinium was founded by the Romans. The City of London, " \
+           "London's ancient core − an area of just 1.12 square miles (2.9 km2) and colloquially known as " \
+           "the Square Mile − retains boundaries that follow closely its medieval limits." \
+           "The City of Westminster is also an Inner London borough holding city status. " \
+           "Greater London is governed by the Mayor of London and the London Assembly." \
+           "London is located in the southeast of England." \
+           "Westminster is located in London." \
+           "London is the biggest city in Britain. London has a population of 7,172,036."
 
-    # print(n_chunk(get_sent(text)[0]))
-    # noun_chunks_sent(get_sent(text)[0])
-    # noun_component(get_sent(text)[0])
-    # print_sentence(get_sent(text)[0])
-    # print(noun_component_list(get_sent(text)[0]))
-    # print(get_sent(text))
-    # n_chunk("It is impossible to operate on the patient, but unless the tumour is destroyed the patient will die.")
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
 
     main()
-
-    """
-    EXPECTED OUTPUT:
-    Noun     Aux Noun
-    engineer,had,construction
-             verb
-    engineer,plan,construction
-             verb
-    engineer,produce,energy
-
-    """
