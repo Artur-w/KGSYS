@@ -106,7 +106,7 @@ class Triple:
 
         relation = filter_spans(spans)
         print(f"REL IN FUN{type(relation)}")
-        self.relation_list.append(relation)
+        # self.relation_list.append(relation)
         return relation
 
     def entities(self):
@@ -177,22 +177,14 @@ class Triple:
             #             entity2 = modifier + " " + prefix + " " + token.text
 
         entities = [entity1.strip(), entity2.strip()]
-        self.entities_list.append(entities)
+        # self.entities_list.append(entities)
         return entities
 
     def get_triple(self):
-        # print()
-        # print()
-        # print(f"ENTS: {self.entities()} REL: {self.relation()}")
-        # object_ = [i[0] for i in self.entities()]
-        # subject_ = [i[1] for i in self.entities()]
-        # relations_ = [i for i in self.relation()]
-        ent = self.entities
-        rel = self.relation
-        print(type(ent))
-        print(type(rel))
-
-
+        ents = self.entities()
+        rel = self.relation()
+        for r in rel:
+            return (ents[0], r.text, ents[1])
 
     def tree(self, outfile):
         '''
@@ -236,7 +228,7 @@ class Triple:
         # displacy.serve(doc, style="dep", options=options)
 
     def set_model(self,model):
-        nlp = spacy.load(model)
+        nlp = spacy.load(str(model))
         return nlp
 
     def info(self, additional=""):

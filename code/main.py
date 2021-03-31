@@ -5,14 +5,14 @@
 # import spacy
 # import scispacy
 import pandas as pd
-# import networkx as nx
-# import matplotlib.pyplot as plt
+import networkx as nx
+import matplotlib.pyplot as plt
 # # TODO: use scispacy model.
 # from spacy import displacy
 # from spacy.matcher import Matcher
 # from spacy.tokens import Span
 from Triple import Triple
-# from tqdm import tqdm
+from tqdm import tqdm
 # from spacy.util import filter_spans
 # import visualise_spacy_tree
 # from pathlib import Path
@@ -21,17 +21,17 @@ from Triple import Triple
 # /Users/awenc/NUIM/CS440/KG_NLPSystem/data/wiki_sentences_v2.csv
 # /Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv
 
-# path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv"
-# data_sentences = pd.read_csv(path_to_csv)
-# print(len(data_sentences['sentences']))
-# path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv"
-# psycho_sentences = pd.read_csv(path_to_csv)
-# print(len(psycho_sentences['sentences']))
+path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv"
+data_sentences = pd.read_csv(path_to_csv)
+print(len(data_sentences['sentence']))
+path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv"
+psychology_data = pd.read_csv(path_to_csv)
+# print(len(psychology_data['sentence']))
 path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/data-covid/sentences_covid_v2.csv"
-covid_sentences = pd.read_csv(path_to_csv)
+covid_data = pd.read_csv(path_to_csv)
 ptc = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sample_data.csv"
 sample_data = pd.read_csv(ptc)
-print(len(sample_data['sentences']))
+# print(len(sample_data['sentence']))
 
 # TODO: Expand cleaning function.
 def clean(text):
@@ -114,48 +114,31 @@ def sent_(text):
         token_dep = token.dep_
         print('{:<12}{:<10}{:<10}{:<10}'.format(token_text, token_pos, token_dep,spacy.explain(token_pos)))
 
+def printGraph(triples):
+    G = nx.Graph()
+    for triple in triples:
+        G.add_node(triple[0])
+        G.add_node(triple[1])
+        G.add_node(triple[2])
+        G.add_edge(triple[0], triple[1])
+        G.add_edge(triple[1], triple[2])
+
+    pos = nx.spring_layout(G)
+    plt.figure()
+    nx.draw(G, pos, edge_color='black', width=1, linewidths=1,
+            node_size=500, node_color='seagreen', alpha=0.9,
+            labels={node: node for node in G.nodes()})
+    plt.axis('off')
+    plt.show()
 
 def main():
     # # TODO: PureWindowsPath?
-    # triples = []
-    # entity_pairs = []
-    # relations = []
+    triples = []
 
-    # # output_folder = Path('./output/')
-    # # top_relations_file = output_folder / "toprelations.txt"
+    for sent in tqdm(data_sentences['sentence']):
+        triples.append(Triple(sent).get_triple())
 
-    # for i in tqdm(covid_sentences['sentence']):
-    #     entity_pairs.append(Triple(str(i)).entities())
-    #     relations.append(Triple(str(i)).relation())
-
-    # # entities()
-    # object_ = [i[0] for i in tqdm(entity_pairs)]
-    # subject_ = [i[1] for i in entity_pairs]
-    # relations_ = [i for i in relations]
-    # print(f"{len(object_)} {len(subject_)} {len(relations_)}")
-
-    myT = Triple("London is the capital and largest city of England and the United Kingdom. Standing on the River ").get_triple()
-    # covid_sentences['sentence'][0]
-    # print(myT)
-    text = "London is the capital and largest city of England and the United Kingdom. Standing on the River " \
-           "Thames in the south-east of England, at the head of its 50-mile (80 km) estuary leading to " \
-           "the North Sea, London has been a major settlement for two millennia. " \
-           "Londinium was founded by the Romans. The City of London, " \
-           "London's ancient core − an area of just 1.12 square miles (2.9 km2) and colloquially known as " \
-           "the Square Mile − retains boundaries that follow closely its medieval limits." \
-           "The City of Westminster is also an Inner London borough holding city status. " \
-           "Greater London is governed by the Mayor of London and the London Assembly." \
-           "London is located in the southeast of England." \
-           "Westminster is located in London." \
-           "London is the biggest city in Britain. London has a population of 7,172,036."
-
-
-
-
-
-
-
-
+    printGraph(triples)
 
 if __name__ == "__main__":
 
