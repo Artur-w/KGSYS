@@ -1,0 +1,5 @@
+Tom is tall. 
+Tom is timid. 
+Bill is smart. 
+Bill is tall. 
+Steve is smart. 

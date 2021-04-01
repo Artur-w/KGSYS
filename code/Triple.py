@@ -24,24 +24,20 @@ class Triple:
 
     Attributes
     ----------
-    attr0 : str
-        first name of the triple
-    attr1 : str
-        family name of the triple
-    attr2 : int
-        age of the triple
+    text : str
+        input text
 
     Methods
     -------
-    relation
-    entities
+    relation()
+    entities()
+    get_triple()
+
 
 
     info(additional=""):
         Prints the triple's name and age.
     """
-    global entities_list
-    global relation_list
 
     def __init__(self, text):
         """
@@ -60,11 +56,6 @@ class Triple:
         """
         self.text = text
         self.doc = nlp(self.text)
-        # self.entities_list = []
-        # self.relation_list = []
-        # self.triple = []
-        # self.entities = entities_list
-        # self.entities = Triple(self.text).entities() # RecursionError: maximum recursion depth exceeded
 
     def relation(self):
         """
@@ -105,8 +96,6 @@ class Triple:
         spans = [self.doc[start:end] for _, start, end in matches]
 
         relation = filter_spans(spans)
-        print(f"REL IN FUN{type(relation)}")
-        # self.relation_list.append(relation)
         return relation
 
     def entities(self):
@@ -177,7 +166,6 @@ class Triple:
             #             entity2 = modifier + " " + prefix + " " + token.text
 
         entities = [entity1.strip(), entity2.strip()]
-        # self.entities_list.append(entities)
         return entities
 
     def get_triple(self):
@@ -191,6 +179,7 @@ class Triple:
         Dependency Tree of the sentence.
 
         '''
+        # TODO: more inside this is bare code example form docs.
         png = visualise_spacy_tree.create_png(nlp(self.text))
 
         # Write it to a file
@@ -200,9 +189,8 @@ class Triple:
             f.write(png)
 
         # Override node attributes to customise the plot
-
         Token.set_extension('plot', default={}, force=True)  # Create a token underscore extension
-        for token in doc:
+        for token in self.doc:
             node_label = '{0} [{1}])'.format(token.orth_, token.i)
             token._.plot['label'] = node_label
             if token.dep_ == 'ROOT':
@@ -224,25 +212,10 @@ class Triple:
 
         output_path = Path("./images/" + outfile + '.svg')
         output_path.open("w", encoding="utf-8").write(svg)
+        
         # Optional serve method for live server displaying dependency in browser
         # displacy.serve(doc, style="dep", options=options)
 
     def set_model(self,model):
         nlp = spacy.load(str(model))
         return nlp
-
-    def info(self, additional=""):
-        """
-        Prints the person's name and age.
-
-        If the argument 'additional' is passed, then it is appended after the main info.
-
-        Parameters
-        ----------
-        additional : str, optional
-            More info to be displayed (default is None)
-
-        Returns
-        -------
-        None
-        """
