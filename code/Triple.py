@@ -1,18 +1,14 @@
-# TODO: Create triple class
 import spacy
-import sys
 import visualise_spacy_tree
 from spacy.matcher import Matcher
 from spacy import displacy
 from spacy.util import filter_spans
 from spacy.tokens import Token
+from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 nlp = spacy.load('en_core_web_sm')
-# TODO: Maybe using Path is better?
-# Path is better for multiplatform
-from pathlib import Path
 
 class Triple:
     """
@@ -32,11 +28,10 @@ class Triple:
     relation()
     entities()
     get_triple()
+    tree()
+    graph()
+    set_module()
 
-
-
-    info(additional=""):
-        Prints the triple's name and age.
     """
 
     def __init__(self, text):
@@ -46,13 +41,6 @@ class Triple:
         Parameters
         ----------
             text : str
-                sentence or block of text
-            entities : str
-                subject of the sentence
-            relation : str
-                relation between subject and object
-            object : str
-                object or objects of the text or the sentence
         """
         self.text = text
         self.doc = nlp(self.text)
@@ -66,14 +54,6 @@ class Triple:
         # Matcher class object
         matcher = Matcher(nlp.vocab, validate=True)
 
-        """
-
-        OP	DESCRIPTION
-        !	Negate the pattern, by requiring it to match exactly 0 times.
-        ?	Make the pattern optional, by allowing it to match 0 or 1 times.
-        +	Require the pattern to match 1 or more times.
-        *	Allow the pattern to match zero or more times.
-        """
         # in some cases pattern0 matches too many words.
         pattern0=[{'POS': 'VERB', 'OP': '?'},
                 {'POS': 'ADV', 'OP': '*'},
@@ -111,13 +91,10 @@ class Triple:
         persons = []
         orgs = []
 
-        # ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
-        # print('Entities', ents)
         for item in self.doc.ents:
             if item.label_ == 'PERSON':
                 # look for person entities.
                 persons.append(item.text)
-            # TODO: use all entities for something cool?
             if item.label_ == 'ORG':
                 orgs.append(item.text)
 
@@ -151,7 +128,6 @@ class Triple:
                 # update variables
                 prv_tok_dep = token.dep_
                 prv_tok_text = token.text
-            #TODO: something wrong with this ifs
             # If subject not captured use person entity
             # if entity1.strip() == ' ' and len(persons) >= 1:
             #     # print("Persons", persons)
@@ -179,7 +155,6 @@ class Triple:
         Dependency Tree of the sentence.
 
         '''
-        # TODO: more inside this is bare code example form docs.
         png = visualise_spacy_tree.create_png(nlp(self.text))
 
         # Write it to a file
@@ -212,7 +187,7 @@ class Triple:
 
         output_path = Path("./images/" + outfile + '.svg')
         output_path.open("w", encoding="utf-8").write(svg)
-        
+
         # Optional serve method for live server displaying dependency in browser
         # displacy.serve(doc, style="dep", options=options)
 

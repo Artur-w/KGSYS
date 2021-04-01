@@ -1,27 +1,21 @@
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
-import pytest
 from Triple import Triple
 from tqdm import tqdm
 
-
-# /Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv
-# /Users/awenc/NUIM/CS440/KG_NLPSystem/data/wiki_sentences_v2.csv
-# /Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv
-wiki_data = pd.read_csv("/Users/awenc/NUIM/CS440/KG_NLPSystem/data/wiki_sentences_v2.csv")
-print(f"wiki_data have: {len(wiki_data)} sentences")
-path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences.csv"
-data_sentences = pd.read_csv(path_to_csv)
+# wiki_data = pd.read_csv("data/wiki_sentences_v2.csv")
+# print(f"wiki_data have: {len(wiki_data)} sentences")
+# path_to_csv = "data/sentences.csv"
+# data_sentences = pd.read_csv(path_to_csv)
 # print(len(data_sentences['sentence']))
-path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv"
+path_to_csv = "data/sentences_psychology.csv"
 psychology_data = pd.read_csv(path_to_csv)
-# print(len(psychology_data['sentence']))
-path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/data-covid/sentences_covid_v2.csv"
-covid_data = pd.read_csv(path_to_csv)
-ptc = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sample_data.csv"
-sample_data = pd.read_csv(ptc)
-# print(len(sample_data['sentence']))
+print(f"Psychology corpus {len(psychology_data['sentence'])} sentences")
+# path_to_csv = "data/wiki_sentences_v2.csv"
+# covid_data = pd.read_csv(path_to_csv)
+# ptc = "data/sample_data.csv"
+# sample_data = pd.read_csv(ptc)
 
 def knowledge_graph(triples):
     G = nx.Graph()
@@ -53,7 +47,7 @@ def main():
     # # Knowleadge Graph
     knowledge_graph(triples)
     percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
-    # Triple("George like films").graph('george')
+    Triple(percy).graph('percy')
 
 if __name__ == "__main__":
 

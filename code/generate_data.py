@@ -12,9 +12,6 @@ def fileconvert(path_to_folder,path_to_csv_output):
     Read in direcory of files, look for .txt extension,
     extract sentences from text, save sentences in one csv file,
     """
-    # path_to_folder = '/Users/awenc/NUIM/CS440/KG_NLPSystem/data/Psychology Test Materials'
-    # path_to_csv_output = '/Users/awenc/NUIM/CS440/KG_NLPSystem/workspace/sentences_psychology.csv'
-    # TODO: clean is not working for everything why?
     p = Path(path_to_folder)
     for name in tqdm(p.glob('*.txt')):
         f = open(name, 'r')
@@ -47,7 +44,6 @@ def get_sents(text):
             sentences (list(str)): list of sentences
 
     """
-    # self.text = text
     tokens = nlp(text)
     sentences = []
     for sent in tokens.sents:
@@ -111,8 +107,7 @@ def clean(text):
     return text
 
 def main():
-    # get_sents()
-    # sys.argv[0]
+
     path_to_folder = sys.argv[1]
     path_to_csv_output = sys.argv[2]
 
