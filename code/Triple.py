@@ -171,8 +171,6 @@ class Triple:
             if token.dep_ == 'ROOT':
                 token._.plot['color'] = 'green'
 
-        # png = open('./images/parse_tree2.png','rb')
-
         img = mpimg.imread('./images/' + outfile)
         plt.imshow(img)
         plt.show()
@@ -180,13 +178,15 @@ class Triple:
     def graph(self,outfile):
         doc = nlp(self.text)
         doc.user_data['title'] = "Dependency graph"
-        # spacy.displacy.serve(doc,style='dep')
         options = {"compact": True, "bg": "#09a3d5",
            "color": "white", "font": "Source Sans Pro"}
         svg = displacy.render(doc, style="dep", options=options)
 
-        output_path = Path("./images/" + outfile + '.svg')
-        output_path.open("w", encoding="utf-8").write(svg)
+        try:
+            output_path = Path("./images/" + outfile + '.svg')
+            output_path.open("w", encoding="utf-8").write(svg)
+        except Exception:
+            pass
 
         # Optional serve method for live server displaying dependency in browser
         # displacy.serve(doc, style="dep", options=options)

@@ -46,7 +46,9 @@ def main():
 
     # # Knowleadge Graph
     knowledge_graph(triples)
+
     percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
+    Triple(percy).tree('percytree')
     Triple(percy).graph('percy')
 
 if __name__ == "__main__":
