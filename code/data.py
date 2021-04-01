@@ -1,3 +1,4 @@
+import pandas as pd
 """
 File contining some example sentences.
 
@@ -89,3 +90,8 @@ covtext = """
                 While Mohiddin volunteers for a study of survivors, he’s also running one: a trial that [aims to recruit 140 people](https://clinicaltrials.gov/ct2/show/NCT04340921) while they are hospitalized with COVID-19 or soon after, 20 with severe myocarditis and the rest without. He and colleagues will look for abnormal T cell levels in the blood of people with myocarditis, which could help explain whether and how the immune system is causing cardiac injury. He is also exploring whether immune cell patterns in the blood presage myocarditis later.
                 Even if COVID-19 rarely causes serious myocarditis, one hypothesis is that mild cases could heighten the risk of heart disease years later. Scar tissue can form as myocarditis heals, and earlier work has shown residual cardiac inflammation portends worse heart health. As cardiologists, “We’re in the business of identifying asymptomatic risk factors,” such as hypertension, Mohiddin says. “It’s not difficult to imagine that in the future, clinical practitioners will ask a new patient, ‘Did you have COVID?’”
             """
+
+
+path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv"
+psychology_data = pd.read_csv(path_to_csv)
+print(f"Psychology corpus {len(psychology_data['sentence'])} sentences")

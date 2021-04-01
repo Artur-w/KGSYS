@@ -1,21 +1,9 @@
-import pandas as pd
+# import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 from Triple import Triple
 from tqdm import tqdm
-
-# wiki_data = pd.read_csv("data/wiki_sentences_v2.csv")
-# print(f"wiki_data have: {len(wiki_data)} sentences")
-# path_to_csv = "data/sentences.csv"
-# data_sentences = pd.read_csv(path_to_csv)
-# print(len(data_sentences['sentence']))
-path_to_csv = "data/sentences_psychology.csv"
-psychology_data = pd.read_csv(path_to_csv)
-print(f"Psychology corpus {len(psychology_data['sentence'])} sentences")
-# path_to_csv = "data/wiki_sentences_v2.csv"
-# covid_data = pd.read_csv(path_to_csv)
-# ptc = "data/sample_data.csv"
-# sample_data = pd.read_csv(ptc)
+from data import psychology_data
 
 def knowledge_graph(triples):
     G = nx.Graph()
@@ -40,16 +28,16 @@ def main():
     for i, sent in enumerate(tqdm(psychology_data['sentence'])):
         triples.append(Triple(sent).get_triple())
 
-    #     # Graphs (uncomment to create artefacts)
-    #     # Triple(sent).tree('tree1'+str(i))
-    #     # Triple(sent).graph('tree1'+str(i))
+        # Graphs (uncomment to create artefacts)
+        # Triple(sent).tree('tree1'+str(i))
+        # Triple(sent).graph('tree1'+str(i))
 
     # # Knowleadge Graph
     knowledge_graph(triples)
 
     percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
-    Triple(percy).tree('percytree')
-    Triple(percy).graph('percy')
+    Triple(percy).tree('dep_tree')
+    Triple(percy).graph('dep')
 
 if __name__ == "__main__":
 

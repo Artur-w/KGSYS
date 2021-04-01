@@ -12,9 +12,8 @@ nlp = spacy.load('en_core_web_sm')
 
 class Triple:
     """
-    A class to combine all components of pipeline
-    for extracting triple from sentence, but probably it doesnt make
-    sense to use class for that, but well why the hell not?
+    A class combining method entities and relation extraction
+    to extract Triple.
 
     ...
 
@@ -36,7 +35,7 @@ class Triple:
 
     def __init__(self, text):
         """
-        Constructs all the necessary attributes for the triple object.
+        Constructor takes in text
 
         Parameters
         ----------
@@ -159,10 +158,14 @@ class Triple:
 
         # Write it to a file
         outfile = outfile+'.png'
-        print(outfile)
+
 
         with open('code/images/'+outfile, 'wb') as f:
-            f.write(png)
+            try:
+                f.write(png)
+                print("Savrd"+outfile)
+            except Exception:
+                pass
 
         # Override node attributes to customise the plot
         Token.set_extension('plot', default={}, force=True)  # Create a token underscore extension

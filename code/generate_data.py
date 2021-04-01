@@ -8,7 +8,7 @@ nlp = spacy.load("en_core_sci_lg")
 
 def fileconvert(path_to_folder,path_to_csv_output):
     """
-    path_to_folder: Path to folder containing .txt files we want to use.
+    path_to_folder: Path to folder containing .txt files.
     Read in direcory of files, look for .txt extension,
     extract sentences from text, save sentences in one csv file,
     """
