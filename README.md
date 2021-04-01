@@ -18,3 +18,8 @@ Create conda environment
 
 `python -m spacy download en_core_web_lg` and
 `python -m spacy download en_core_web_sm`
+
+## Run
+
+Run from main folder.
+`python code/main.py`
