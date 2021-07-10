@@ -10,7 +10,8 @@ def fileconvert(path_to_folder,path_to_csv_output):
     """
     path_to_folder: Path to folder containing .txt files.
     Read in direcory of files, look for .txt extension,
-    extract sentences from text, save sentences in one csv file,
+    extract sentences from text, save sentences in one csv file -
+    consolidating all text files in directory into one csv file.
     """
     p = Path(path_to_folder)
     for name in tqdm(p.glob('*.txt')):
@@ -33,12 +34,13 @@ def fileconvert(path_to_folder,path_to_csv_output):
 
 def get_sents(text):
     """
-    Generating list of sentences for input text.
+    Generating list of sentences from input text.
+    Used as helper function in fileconvert.
 
     Parameters
     ----------
     text : str
-            Block of text unstructured
+            Block of unstructured text.
 
     Returns:
             sentences (list(str)): list of sentences
@@ -53,12 +55,12 @@ def get_sents(text):
 def clean(text):
     """
     Cleaning text, removing predifiend unwanted
-    elements of sentence.
+    elements of sentences.
 
     Parameters
     ----------
         text : str
-            Block of text with multiple sentences
+            Block of text with multiple sentences.
 
     Returns
     -------
@@ -107,8 +109,10 @@ def clean(text):
     return text
 
 def main():
-
+    # taking in directory and looking for text files.
     path_to_folder = sys.argv[1]
+
+    # path to csv file we want to save
     path_to_csv_output = sys.argv[2]
 
     fileconvert(path_to_folder,path_to_csv_output)
