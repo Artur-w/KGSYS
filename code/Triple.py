@@ -8,7 +8,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from nltk.stem import PorterStemmer
-
 nlp = spacy.load('en_core_web_sm')
 
 class Triple:

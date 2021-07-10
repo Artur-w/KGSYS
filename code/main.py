@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from Triple import Triple
 from tqdm import tqdm
 from data import psychology_data
+import nltk
 
 def knowledge_graph(triples):
     G = nx.Graph()
@@ -27,6 +28,7 @@ def main():
 
     for i, sent in enumerate(tqdm(psychology_data['sentence'])):
         triples.append(Triple(sent).get_triple())
+        # print(list(next(nltk.trigrams(sent))))
 
         # Graphs (uncomment to create artefacts)
         # Triple(sent).tree('tree1'+str(i))
