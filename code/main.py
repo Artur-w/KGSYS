@@ -1,4 +1,4 @@
-# import pandas as pd
+# Importing libraries
 import networkx as nx
 import matplotlib.pyplot as plt
 from Triple import Triple
@@ -6,6 +6,8 @@ from tqdm import tqdm
 from data import psychology_data
 import nltk
 
+# method responsible for creating a graph
+# TODO: look for way to improve the graph.
 def knowledge_graph(triples):
     G = nx.Graph()
     for triple in triples:
@@ -24,22 +26,23 @@ def knowledge_graph(triples):
     plt.show()
 
 def main():
+    # store triples in list
     triples = []
 
+    # for each sentence extract Triple
     for i, sent in enumerate(tqdm(psychology_data['sentence'])):
         triples.append(Triple(sent).get_triple())
-        # print(list(next(nltk.trigrams(sent))))
 
-        # Graphs (uncomment to create artefacts)
+        # Graphs (uncomment to save artefacts on disk)
         # Triple(sent).tree('tree1'+str(i))
         # Triple(sent).graph('tree1'+str(i))
 
-    # # Knowleadge Graph
     knowledge_graph(triples)
-
-    percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
-    Triple(percy).tree('dep_tree')
-    Triple(percy).graph('dep')
+    print(triples)
+    # Tesitng sentence
+    # percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
+    # Triple(percy).tree('dep_tree')
+    # Triple(percy).graph('dep')
 
 if __name__ == "__main__":
 
