@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from Triple import Triple
 from tqdm import tqdm
 from data import psychology_data
-import nltk
 
 # method responsible for creating a graph
 # TODO: look for way to improve the graph.
