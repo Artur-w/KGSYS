@@ -8,7 +8,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import re
-# from nltk.stem import PorterStemmer
+import networkx as nx
 
 nlp = spacy.load('en_core_web_sm')
 
@@ -148,6 +148,8 @@ class Triple:
     def get_triple(self):
         ents = self.entities()
         rel = self.relation()
+        a,b,c = ents[0],rel,ents[1]
+        print(f"{a}-{b}-{b}")
         for r in rel:
             return (ents[0], r.text, ents[1])
 
@@ -249,8 +251,8 @@ class Triple:
 
     def clean(text):
         """
-        Cleaning text, removing predifiend unwanted
-        elements of sentences.
+        Cleaning text, removing unwanted
+        elements of sentences besed on regex.
 
         Parameters
         ----------
@@ -302,3 +304,24 @@ class Triple:
         text = re.sub(' +',' ',str(text))
 
         return text
+
+# Graphing
+
+# method responsible for creating a graph
+# TODO: look for way to improve the graph.
+def knowledge_graph(triples):
+    G = nx.Graph()
+    for triple in triples:
+        G.add_node(triple[0])
+        G.add_node(triple[1])
+        G.add_node(triple[2])
+        G.add_edge(triple[0], triple[1])
+        G.add_edge(triple[1], triple[2])
+
+    pos = nx.spring_layout(G)
+    plt.figure()
+    nx.draw(G, pos, edge_color='black', width=1, linewidths=1,
+            node_size=500, node_color='#09a3d5', alpha=0.9,
+            labels={node: node for node in G.nodes()})
+    plt.axis('off')
+    plt.show()

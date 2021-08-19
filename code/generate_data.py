@@ -4,9 +4,9 @@ import spacy
 from tqdm import tqdm
 import re
 
-nlp = spacy.load("en_core_sci_lg")
+nlp = spacy.load("en_core_web_sm")
 
-def fileconvert(path_to_folder,path_to_csv_output):
+def fileconvert(path_to_folder,csv_output):
     """
     path_to_folder: Path to folder containing .txt files.
     Read in direcory of files, look for .txt extension,
@@ -14,43 +14,41 @@ def fileconvert(path_to_folder,path_to_csv_output):
     consolidating all text files in directory into one csv file.
     """
     p = Path(path_to_folder)
+    # look for all files with .txt extension
+    count = 0
     for name in tqdm(p.glob('*.txt')):
+        count+=1
         f = open(name, 'r')
-        line = f.read()
-        get_sent = get_sents(line)
-        print(len(get_sents(line)))
-        outfile = open('./sentences_temp.txt','w')
-        for sent in tqdm(get_sent):
-            outfile.write(clean(sent)+"\n")
-    """
-    Wrap each line in quotes in order to make data digastable by pandas DataFrame
-    """
-    with open('./sentences_temp.txt','r') as f:
-        x = f.readlines()
-        with open(path_to_csv_output,'w') as fw:
-            fw.write("sentence"+"\n")
-            for line in x:
-                fw.write('\"'+line.strip('\n').strip('\r')+'\"\n')
+        line = nlp(f.read())
+        sentences = [sentence.text for sentence in line.sents]
+        outfile = open(csv_output,'a')
+        outfile.write("sentence"+"\n")
+        for sent in tqdm(sentences):
+            outfile.write("\""+clean(sent)+"\""+"\n")
 
-def get_sents(text):
-    """
-    Generating list of sentences from input text.
-    Used as helper function in fileconvert.
+    print(str(count)+" "+"Files converted")
 
-    Parameters
-    ----------
-    text : str
-            Block of unstructured text.
 
-    Returns:
-            sentences (list(str)): list of sentences
+# def get_sents(text):
+#     """
+#     Generating list of sentences from input text.
+#     Used as helper function in fileconvert.
 
-    """
-    tokens = nlp(text)
-    sentences = []
-    for sent in tokens.sents:
-        sentences.append(sent.text)
-    return sentences
+#     Parameters
+#     ----------
+#     text : str
+#             Block of unstructured text.
+
+#     Returns:
+#             sentences (list(str)): list of sentences
+
+#     """
+#     tokens = nlp(text)
+#     sentences = []
+#     for sent in tokens.sents:
+#         sentences.append(sent.text)
+#     return sentences
+
 
 def clean(text):
     """
@@ -69,6 +67,7 @@ def clean(text):
     """
     # removing new line character
     text = re.sub('\n','', str(text))
+    text = re.sub('\*\*','', str(text))
     text = re.sub('\n ','',str(text))
     # removing apostrophes
     text = re.sub("'s",'',str(text))
@@ -108,14 +107,11 @@ def clean(text):
 
     return text
 
-def main():
-    # taking in directory and looking for text files.
-    path_to_folder = sys.argv[1]
-
-    # path to csv file we want to save
-    path_to_csv_output = sys.argv[2]
-
-    fileconvert(path_to_folder,path_to_csv_output)
 
 if __name__ == "__main__":
-    main()
+    # path to directory of textfiles
+    path_to_folder = sys.argv[1]
+    # Save file name
+    csv_output = "data/csv/" +(str(sys.argv[2]))
+
+    fileconvert(path_to_folder,csv_output)

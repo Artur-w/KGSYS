@@ -1,9 +1,6 @@
 import pandas as pd
 """
-File contining some example sentences.
-
-
-
+File contining example sentences.
 
 """
 txt = "An engineer had to plan the construction of an artificial lake to produce electric energy."
@@ -92,6 +89,6 @@ covtext = """
             """
 
 
-path_to_csv = "/Users/awenc/NUIM/CS440/KG_NLPSystem/data/sentences_psychology.csv"
+path_to_csv = "data/sentences_psychology.csv"
 psychology_data = pd.read_csv(path_to_csv)
 print(f"Psychology corpus {len(psychology_data['sentence'])} sentences")
