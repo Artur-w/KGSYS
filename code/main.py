@@ -3,7 +3,8 @@ from Triple import knowledge_graph
 # import matplotlib.pyplot as plt
 from Triple import Triple
 from tqdm import tqdm
-from example_data import psychology_data
+import pandas as pd
+# from data import psychology_data
 
 # Read in data
 path_to_csv = "data/sentences_psychology.csv"
