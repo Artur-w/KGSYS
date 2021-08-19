@@ -4,11 +4,12 @@ This project was made for final year project course.
 
 ## Installation
 
-**Create env and install deps from file**
+Create env and install deps from file
 
 `conda create -n <myenv> -file requirements.txt`
 
-**or**
+or
+
 Create conda environment
 `conda create -n myenvironment`
 Install necessary libraries
