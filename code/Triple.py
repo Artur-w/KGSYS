@@ -148,8 +148,8 @@ class Triple:
     def get_triple(self):
         ents = self.entities()
         rel = self.relation()
-        a,b,c = ents[0],rel,ents[1]
-        print(f"{a}-{b}-{b}")
+        # a,b,c = ents[0],rel,ents[1]
+        # print(f"{a}-{b}-{b}")
         for r in rel:
             return (ents[0], r.text, ents[1])
 

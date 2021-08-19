@@ -5,6 +5,10 @@ from Triple import Triple
 from tqdm import tqdm
 from example_data import psychology_data
 
+# Read in data
+path_to_csv = "data/sentences_psychology.csv"
+psychology_data = pd.read_csv(path_to_csv)
+print(f"Psychology data corpus {len(psychology_data['sentence'])} sentences")
 
 def main():
     # store triples in list
@@ -26,5 +30,4 @@ def main():
     # Triple(percy).graph('dep')
 
 if __name__ == "__main__":
-
     main()
