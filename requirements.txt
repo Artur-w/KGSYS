@@ -1,7 +1,8 @@
-pandas==1.1.5
 matplotlib==3.3.2
 networkx==2.5
+pandas==1.1.5
 tqdm==4.52.0
-nltk==3.6.2
-spacy==3.0.6
+app==0.0.1
+scispacy==0.4.0
+spacy==3.0.5
 visualise_spacy_tree==0.0.6
