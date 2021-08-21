@@ -19,13 +19,14 @@ def fileconvert(path_to_folder,csv_output):
     count = 0
     for name in tqdm(p.glob('*.txt')):
         count+=1
-        f = open(name, 'r')
-        line = nlp(f.read())
-        sentences = [sentence.text for sentence in line.sents]
-        outfile = open(csv_output,'a')
-        outfile.write("sentence"+"\n")
-        for sent in tqdm(sentences):
-            outfile.write("\""+clean(sent)+"\""+"\n")
+        # f = open(name, 'r')
+        with open(name, 'r') as f:
+            line = nlp(f.read())
+            sentences = [sentence.text for sentence in line.sents]
+            with  open(csv_output,'a') as outfile:
+                outfile.write("sentence"+"\n")
+                for sent in tqdm(sentences):
+                    outfile.write("\""+clean(sent)+"\""+"\n")
 
     print(str(count)+" "+"Files converted")
 

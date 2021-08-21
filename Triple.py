@@ -203,63 +203,6 @@ class Triple:
         nlp = spacy.load(str(model))
         return nlp
 
-
-    def clean(text):
-        """
-        Cleaning text, removing unwanted
-        elements of sentences besed on regex.
-
-        Parameters
-        ----------
-            text : str
-                Block of text with multiple sentences.
-
-        Returns
-        -------
-            text : str
-                Cleaned text
-        """
-        # removing new line character
-        text = re.sub('\n','', str(text))
-        text = re.sub('\n ','',str(text))
-        # removing apostrophes
-        text = re.sub("'s",'',str(text))
-        # removing hyphens
-        text = re.sub('-',' ',str(text))
-        text = re.sub('- ','',str(text))
-        # removing quotation marks
-        text = re.sub('\"','',str(text))
-        # removing this �, guessing it was apostrophe
-        text = re.sub('�s','',str(text))
-        text = re.sub('\n#','', str(text))
-        text = re.sub(' # ',' ', str(text))
-        text = re.sub('.#',' ', str(text))
-        text = re.sub('\""','', str(text))
-        text = re.sub('[a-z]+�','', str(text))
-        # removing paragraph numbers
-        text = re.sub('[0-9]+.\t','',str(text))
-        # removing new line characters
-        text = re.sub('\n ','',str(text))
-        text = re.sub('\n',' ',str(text))
-        # removing apostrophes
-        text = re.sub("'s",'',str(text))
-        # removing hyphens
-        text = re.sub('-',' ',str(text))
-        text = re.sub('- ','',str(text))
-        # removing quotation marks
-        text = re.sub('\"','',str(text))
-        # removing salutations
-        text = re.sub('Mr.','Mr',str(text))
-        text = re.sub('Mrs.','Mrs',str(text))
-        text = re.sub(r'\[',' ',str(text))
-        text = re.sub(r'\]',' ',str(text))
-        # removing any reference to outside text
-        # text = re.sub('[\(\[].*?[\)\]]', '', str(text))
-        # removing double space
-        text = re.sub(' +',' ',str(text))
-
-        return text
-
 # Graphing
 
 # method responsible for creating a graph
