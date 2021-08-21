@@ -10,8 +10,6 @@ nlp = spacy.load("en_core_web_sm")
 def fileconvert(path_to_folder,csv_output):
     """
     path_to_folder: Path to folder containing .txt files.
-    Read in direcory of files, look for .txt extension,
-    extract sentences from text, save sentences in one csv file -
     consolidating all text files in directory into one csv file.
     """
     p = Path(path_to_folder)
@@ -23,7 +21,7 @@ def fileconvert(path_to_folder,csv_output):
         with open(name, 'r') as f:
             line = nlp(f.read())
             sentences = [sentence.text for sentence in line.sents]
-            with  open(csv_output,'a') as outfile:
+            with open(csv_output,'a') as outfile:
                 outfile.write("sentence"+"\n")
                 for sent in tqdm(sentences):
                     outfile.write("\""+clean(sent)+"\""+"\n")
@@ -90,7 +88,7 @@ def clean(text):
 
 # Example data
 """
-File contining example sentences.
+example sentences.
 
 """
 txt = "An engineer had to plan the construction of an artificial lake to produce electric energy."

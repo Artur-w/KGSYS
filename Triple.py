@@ -168,8 +168,8 @@ class Triple:
             try:
                 f.write(png)
                 print("Savrd"+outfile)
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
 
         # Override node attributes to customise the plot
         Token.set_extension('plot', default={}, force=True)  # Create a token underscore extension
@@ -193,8 +193,8 @@ class Triple:
         try:
             output_path = Path("code/images/" + outfile + '.svg')
             output_path.open("w", encoding="utf-8").write(svg)
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
 
         # Optional serve method for live server displaying dependency in browser
         # displacy.serve(doc, style="dep", options=options)
