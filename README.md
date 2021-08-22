@@ -6,26 +6,25 @@ Created for Final Year Project.
 
 1. Create conda environment and install necessary dependencies from file.
 
-    `conda create -n <myenv> -file requirements.txt`
+        `conda create -n <myenv> -file requirements.txt`
 
 2. Manually create conda environment
 
-    `conda create -n myenvironment`
+        `conda create -n myenvironment`
 
-    Install necessary libraries
+Install necessary libraries
 
-    `conda install -c conda-forge spacy`
-
-    `conda install -c conda-forge pandas`
-
-    `conda install -c conda-forge networkx`
-
-    `conda install -c conda-forge scipy`
-
-    `pip install visualise_spacy_tree`
+        `conda install -c conda-forge spacy`
+        `conda install -c conda-forge pandas`
+        `conda install -c conda-forge networkx`
+        `conda install -c conda-forge scipy`
+        `pip install visualise_spacy_tree`
 
 <!-- TODO: add venv instructions -->
 <!-- `python -m spacy download en_core_web_lg` -->
+
+Download model for spaCy
+
     `python -m spacy download en_core_web_sm`
 
 ## Run
@@ -37,5 +36,7 @@ Created for Final Year Project.
 3. run `main.py` give it name of csv file
 
 Window should open with triples representend in graph form.
+
 File with sentences and triples is saved in `data/out`
 <!-- TODO: ways to trigger other artifacts -->
+<!-- TODO fix demo -->

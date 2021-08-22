@@ -148,8 +148,6 @@ class Triple:
     def get_triple(self):
         ents = self.entities()
         rel = self.relation()
-        # a,b,c = ents[0],rel,ents[1]
-        # print(f"{a}-{b}-{b}")
         for r in rel:
             return (ents[0], r.text, ents[1])
 
@@ -163,8 +161,7 @@ class Triple:
         # Write it to a file
         outfile = outfile+'.png'
 
-
-        with open('code/images/'+outfile, 'wb') as f:
+        with open('images/'+outfile, 'wb') as f:
             try:
                 f.write(png)
                 print("Savrd"+outfile)
@@ -179,7 +176,7 @@ class Triple:
             if token.dep_ == 'ROOT':
                 token._.plot['color'] = 'green'
 
-        img = mpimg.imread('code/images/' + outfile)
+        img = mpimg.imread('images/' + outfile)
         plt.imshow(img)
         plt.show()
 
@@ -191,7 +188,7 @@ class Triple:
         svg = displacy.render(doc, style="dep", options=options)
 
         try:
-            output_path = Path("code/images/" + outfile + '.svg')
+            output_path = Path("images/" + outfile + '.svg')
             output_path.open("w", encoding="utf-8").write(svg)
         except Exception as e:
             print(e)
