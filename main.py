@@ -6,8 +6,8 @@ import pandas as pd
 
 # Read in data
 path_to_csv = "data/csv/sentences_psychology.csv"
-psychology_data = pd.read_csv(path_to_csv)
-print(f"Psychology data corpus {len(psychology_data['sentence'])} sentences")
+df = pd.read_csv(path_to_csv)
+print(f"Psychology data corpus {len(df['sentence'])} sentences")
 
 def _test():
     percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
@@ -20,7 +20,7 @@ def main():
     triples = []
 
     # for each sentence extract Triple
-    for i, sent in enumerate(tqdm(psychology_data['sentence'])):
+    for i, sent in enumerate(tqdm(df['sentence'])):
         triples.append(Triple(sent).get_triple())
 
         # Graphs (uncomment to save artefacts on disk)
@@ -28,10 +28,11 @@ def main():
         # Triple(sent).graph('tree1'+str(i))
 
     # knowledge_graph(triples)
-    outf = open('data/out/triples.txt','w')
-    for t in triples:
-        outf.write(str(t))
 
+    df['triples'] = triples
+    df.to_csv('data/csv/psychology_data.csv')
+
+    knowledge_graph(list(df['triples'].head()))
     print("DONE!")
 
 
