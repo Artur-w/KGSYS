@@ -4,9 +4,10 @@ from Triple import Triple
 from tqdm import tqdm
 import pandas as pd
 import os.path
+
 # Read in data into dataframe
-path_to_csv = input("Enter path to csv file")
-path_to_csv = str(path_to_csv)
+path_to_csv = input("Enter path to csv file: ")
+path_to_csv = "data/csv/"+str(path_to_csv)
 # "data/csv/sentences_psychology.csv"
 df = pd.read_csv(path_to_csv)
 print(f"Data corpus {len(df['sentence'])} sentences")
@@ -15,7 +16,6 @@ file_name = os.path.split(path_to_csv)[1][:-4]
 #     percy = "Percy the mockingbird spent the whole warm season chirping and twittering"
 #     Triple(percy).tree('dep_tree')
 #     Triple(percy).graph('dep')
-
 
 def main():
     # store triples in list

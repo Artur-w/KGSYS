@@ -1,7 +1,0 @@
-
-Fido is hungry.
-Rover is friendly.
-Rover is hungry.
-Blackie is frisky.
-Blackie is friendly.
-

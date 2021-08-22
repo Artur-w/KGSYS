@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 import pandas as pd
 import spacy
@@ -13,11 +12,10 @@ def fileconvert(path_to_folder,csv_output):
     consolidating all text files in directory into one csv file.
     """
     p = Path(path_to_folder)
-    # look for all files with .txt extension
     count = 0
+    # look for all files with .txt extension
     for name in tqdm(p.glob('*.txt')):
         count+=1
-        # f = open(name, 'r')
         with open(name, 'r') as f:
             line = nlp(f.read())
             sentences = [sentence.text for sentence in line.sents]
@@ -26,7 +24,7 @@ def fileconvert(path_to_folder,csv_output):
                 for sent in tqdm(sentences):
                     outfile.write("\""+clean(sent)+"\""+"\n")
 
-    print(str(count)+" "+"Files converted")
+    print(str(count)+" "+"Files processed...")
 
 
 def clean(text):
@@ -180,9 +178,11 @@ covtext = """
 
 
 if __name__ == "__main__":
+    indir = input("Enter directory of raw data: ")
     # path to directory of textfiles
-    path_to_folder = sys.argv[1]
+    path_to_folder = "data/raw/"+indir
     # Save file name
-    csv_output = "data/csv/" +(str(sys.argv[2]))
+    outfile = input("Enter file name to save: ")
+    csv_output = "data/csv/" +(str(outfile)+".csv")
 
     fileconvert(path_to_folder,csv_output)
