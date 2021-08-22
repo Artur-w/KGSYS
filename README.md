@@ -1,37 +1,41 @@
 # Scispacy for Knowledge Graphs
 
-This project was made for final year project course.
+Created for Final Year Project.
 
 ## Installation
 
-Create env and install deps from file
+1. Create conda environment and install necessary dependencies from file.
 
-`conda create -n <myenv> -file requirements.txt`
+    `conda create -n <myenv> -file requirements.txt`
 
-or
+2. Manually create conda environment
 
-Create conda environment
-`conda create -n myenvironment`
-Install necessary libraries
-`conda install -c conda-forge spacy`
-`conda install -c conda-forge pandas`
-`conda install -c conda-forge networkx`
-`conda install -c conda-forge scipy`
+    `conda create -n myenvironment`
 
-`pip install visualise_spacy_tree`
+    Install necessary libraries
 
-`python -m spacy download en_core_web_lg`
-`python -m spacy download en_core_web_sm`
+    `conda install -c conda-forge spacy`
+
+    `conda install -c conda-forge pandas`
+
+    `conda install -c conda-forge networkx`
+
+    `conda install -c conda-forge scipy`
+
+    `pip install visualise_spacy_tree`
+
+<!-- TODO: add venv instructions -->
+<!-- `python -m spacy download en_core_web_lg` -->
+    `python -m spacy download en_core_web_sm`
 
 ## Run
 
-### Generate Data
+1. Place your data inside `data/raw/your_dir` direcotry
 
-From dierectory of textfiles creates sentencized text.
-`python data.py`
+2. run `data.py` give it a name of your_dir and name of output file(extension is added automacially.)
 
-### Create Knowledge Graph
+3. run `main.py` give it name of csv file
 
-Creates Knowledge Graph, Triples and artifacts
-Run from main folder.
-`python main.py`
+Window should open with triples representend in graph form.
+File with sentences and triples is saved in `data/out`
+<!-- TODO: ways to trigger other artifacts -->
